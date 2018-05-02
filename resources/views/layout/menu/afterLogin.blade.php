@@ -37,7 +37,10 @@
                                     <li class="dropdown">
                                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Profile <span class="caret"></span></a>
                                       <ul class="dropdown-menu">
-                                        <!-- <li role="separator" class="divider"></li> -->
+                                        <li>
+                                          <a href="{{ url("profile") }}">Profile</a>
+                                        </li>
+                                        <li role="separator" class="divider"></li>
                                         <li>
                                           <a href="{{ url("logout") }}">Log out</a>
                                         </li>

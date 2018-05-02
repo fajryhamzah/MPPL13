@@ -1,0 +1,25 @@
+<?php
+
+return[
+  "title" => "Adopt, Don’t Shop!",
+  "subtitle" => "Adopet is a website where shelters and rescues list their pets for adoption.",
+  "top_join" => "Join Us Now",
+  "top_login" => "Already have an account",
+  "buddy" => "Find your new buddy",
+  "subbuddy" => "You can find a pet with your own preferences very easy.",
+  "owner" => "Choose new owner",
+  "subowner" => "You can give your beloved pet to the right people.",
+  "why" => "Why adopt?",
+  "save" => "Save a life",
+  "subsave" => "To judge our effectiveness by the extent to which animal lives are saved and improved, and by the positive experience of the people we touch",
+  "cost" => "It’ll cost less",
+  "subcost" => "You don't need a lot of money to have a pet.",
+  "hero" => "BE A HERO!",
+  "subhero" => "be a hero to protect animals. we believe, we can save them",
+  "mission" => "Our Mission",
+  "submission" => "We want all pet have someone that loved them, provide them warm place and something to eat so they can happily live.",
+  "vision" => "Our Vision",
+  "subvision" => "We want to be the leading authority in animal care and protection.",
+  "interested" => "Interested?",
+  "bottom_join" => "Join Us",
+];

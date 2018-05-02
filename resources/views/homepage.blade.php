@@ -6,7 +6,7 @@
 @else
   @include("layout.menu.home")
 @endif
-
+die("asfsafsa");
     <section id="banner" class="wow fadeInUp">
         <div class="container">
             <div class="row">
@@ -20,18 +20,18 @@
                 <div class="col-md-6 col-md-offset-1 col-sm-6">
                     <div class="block">
                         <h1>
-                            Adopt, Don’t Shop!
+                            @lang("homepage.title")
                         </h1>
                         <p>
-                            Adopet is a website where shelters and rescues list their pets for adoption.
+                            @lang("homepage.subtitle")
                         </p>
 
                         <ul class="download-btn">
                             <li>
-                                <a href="{{ url("register") }}" class="btn btn-default btn-andriod">Join Us Now</a>
+                                <a href="{{ url("register") }}" class="btn btn-default btn-andriod">@lang("homepage.top_join")</a>
                             </li>
                             <li>
-                                <a href="{{ url("login") }}" class="btn btn-default btn-windows">Already have an account</a>
+                                <a href="{{ url("login") }}" class="btn btn-default btn-windows">@lang("homepage.top_login")</a>
                             </li>
                         </ul>
 
@@ -53,8 +53,8 @@
                                <i class="fa fa-users"></i>
                             </div>
 
-                            <h3>Find your new buddy</h3>
-                            <p>You can find a pet with your own preferences very easy.</p>
+                            <h3>@lang("homepage.buddy")</h3>
+                            <p>@lang("homepage.subbuddy")</p>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
@@ -62,8 +62,8 @@
                             <div class="icon">
                                 <i class="fa fa-home"></i>
                             </div>
-                            <h3>Choose new owner</h3>
-                            <p>You can give your beloved pet to the right people.</p>
+                            <h3>@lang("homepage.owner")</h3>
+                            <p>@lang("homepage.subowner")</p>
                         </div>
                     </div>
                 </div>
@@ -71,19 +71,11 @@
         </div>
     </section>
 
-
-
-
-
-
-
-
-
     <section id="feature">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6 wow fadeInRight" data-wow-delay=".8s">
-                    <h2 class="title">Why adopt?</h2>
+                    <h2 class="title">@lang("homepage.why")</h2>
 
                     <div class="feature-item">
 
@@ -92,8 +84,8 @@
                                 <i class="fa fa-heart"></i>
                             </div>
                             <div class="media-body">
-                                <h4 class="media-heading">Save a life</h4>
-                                <p>To judge our effectiveness by the extent to which animal lives are saved and improved, and by the positive experience of the people we touch</p>
+                                <h4 class="media-heading">@lang("homepage.save")</h4>
+                                <p>@lang("homepage.subsave")</p>
                             </div>
                         </div>
                     </div>
@@ -105,8 +97,8 @@
                                 <i class="fa fa-usd"></i>
                             </div>
                             <div class="media-body">
-                                <h4 class="media-heading">It’ll cost less</h4>
-                                <p>You don't need a lot of money to have a pet.</p>
+                                <h4 class="media-heading">@lang("homepage.cost")</h4>
+                                <p>@lang("homepage.subcost")</p>
                             </div>
                         </div>
                     </div>
@@ -118,8 +110,8 @@
                                 <i class="fa fa-rocket"></i>
                             </div>
                             <div class="media-body">
-                                <h4 class="media-heading">BE A HERO!</h4>
-                                <p>be a hero to protect animals. we believe, we can save them</p>
+                                <h4 class="media-heading">@lang("homepage.hero")</h4>
+                                <p>@lang("homepage.subhero")</p>
                             </div>
                         </div>
                     </div>
@@ -142,9 +134,9 @@
                 </div>
                 <div class="col-md-6 col-sm-6 wow fadeInDown" data-wow-delay=".8s">
                     <div class="block">
-                        <h2>Our Mission</h2>
+                        <h2>@lang("homepage.mission")</h2>
                         <p>
-                            We want all pet have someone that loved them, provide them warm place and something to eat so they can happily live.
+                            @lang("homepage.submission")
                         </p>
                     </div>
                 </div>
@@ -158,9 +150,9 @@
             <div class="row">
                 <div class="col-md-6 col-sm-6 wow fadeInLeft" data-wow-delay=".8s">
                     <div class="block">
-                        <h2>Our Vision</h2>
+                        <h2>@lang("homepage.vision")</h2>
                         <p>
-                          We want to be the leading authority in animal care and protection.
+                          @lang("homepage.subvision")
                         </p>
                     </div>
                 </div>
@@ -178,8 +170,8 @@
                 <div class="col-md-12 wow fadeInDown" data-wow-delay=".8s">
                     <div class="block">
                         <div class="title text-center">
-                            <h2>Interested?</h2>
-                            <a href="{{ url("register") }}"><button class="btn btn-success btn-lg">Join Us</button></a>
+                            <h2>@lang("homepage.interested")</h2>
+                            <a href="{{ url("register") }}"><button class="btn btn-success btn-lg">@lang("homepage.botton_join")</button></a>
                         </div>
                     </div>
 

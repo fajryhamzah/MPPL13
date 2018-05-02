@@ -10,14 +10,14 @@
           <div class="form-group">
             <label for="email">Username/Email</label>
             <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" placeholder="Username or email"/>
-            <small id="emailH" class="form-text text-muted">Your account must be activate first before login</small>
+            <small id="emailH" class="form-text text-muted">@lang("login.info")</small>
           </div>
           <div class="form-group">
             <label for="emai">Password</label>
             <input type="password" name="pass" class="form-control" id="emai" placeholder="Password"/>
           </div>
           {{ csrf_field() }}
-          <button type="submit" id="log">Login</button>
+          <button type="submit" id="log">@lang("login.button")</button>
         </form>
         <div id="msg">
 
