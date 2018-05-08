@@ -1,7 +1,7 @@
-@extends("layout.index")
-@include("layout.menu.afterLogin")
+@extends("layout.index_dashboard")
 @section("content")
-  <section class="sec">
+@include("layout.menu.afterLogin")
+  <section>
     <div class="container">
       <div class="row">
         <div class="col-sm-4">

@@ -122,4 +122,10 @@ class Dashboard extends Controller
   }
 
 
+  public function editProfile(){
+    $data = User::select("username","email","bio","img","lati","longi","name")->where("id",\Session::get("id"))->first();
+
+    return view("profile.edit_profile",$data);
+  }
+
 }

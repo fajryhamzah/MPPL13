@@ -57,6 +57,13 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
   //get all type of Pet
   Route::get("api/pet/{parent}","Dashboard@childTypePet");
+
+
+  //profile
+  Route::get("profile","Profile@editProfile");
+  Route::post("profile","Profile@editProfileSave");
+
+
   Route::get('logout','Dashboard@logout');
 
 });

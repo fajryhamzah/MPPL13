@@ -1,10 +1,9 @@
-@extends("layout.index")
-
+@extends("layout.index_dashboard")
 @section("meta")
   <meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
 @section("top_include")
-<link rel="stylesheet" type="text/css" href="{{ url("css/bootstrap3-wysihtml5.min.css") }}"></link>
+<link rel="stylesheet" href="{{asset("js/ui/trumbowyg.min.css")}}">
 <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -70,54 +69,74 @@
         margin:5px;
       }
 </style>
+<script src="{{asset("js/trumbowyg.min.js")}}"></script>
 @stop
 
 
 
 @section("content")
 @include("layout.menu.afterLogin")
-<section class="sec">
+<section>
   <div class="container">
+
     <div class="row">
       {{\Session::get("error")}}
       <form name="new_adopt" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="pet">Pet Category</label>
-          <select name="category" id="pet" class="form-control">
-            <option value="" selected disabled>Please select</option>
-            @foreach($category as $a)
-              <option value="{{ $a->id }}">{{ $a->name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="panel panel-default" id="pettype" style="display:none">
-          <div class="panel-heading">
-            <h3 class="panel-title">Pet type</h3>
-          </div>
-          <div class="panel-body">
-            wait..
+        <div class="row">
+          <div class="input-field col s6">
+            <select name="category" id="pet">
+              <option value="" disabled selected>Choose your option</option>
+              @foreach($category as $a)
+                <option value="{{ $a->id }}">{{ $a->name }}</option>
+              @endforeach
+            </select>
+            <label>Pet Category</label>
           </div>
         </div>
-        <div class="form-group">
-          <label for="tit">Title</label>
-          <input type="text" name="title" class="form-control" id="tit" placeholder="Title of the post"/>
+
+        <div  id="pettype" style="display:none">
+          <div class="row">
+            <div class="col s12">
+              <label>Pet type</label>
+            </div>
+            <div class="panel-body">
+              wait..
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="de">Description</label>
-          <textarea name="desc" id="de" style="width: 100%"></textarea>
+
+        <div class="row">
+          <div class="input-field col s6">
+            <label for="tit">Title</label>
+            <input type="text" name="title" class="form-control" id="tit" placeholder="Title of the post"/>
+          </div>
         </div>
-        <div class="form-group" style="width:100%; height:100%;">
-          <label for="pac-input">Pet location</label>
-          <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-          <div id="map"></div>
+
+
+        <div class="row">
+          <div class="input-field col s12">
+            <label for="de">Description</label>
+            <textarea name="desc" id="de"></textarea>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="Product Name">Pet photos (can attach more than one):</label>
-          <input type="file" class="form-control" name="image[]" multiple />
+
+        <div class="row" style="width:100%; height:100%;">
+          <div class="input-field col s12">
+            <label for="pac-input">Pet location</label>
+            <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+            <div id="map"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <label for="Product Name">Pet photos (can attach more than one):</label>
+            <input type="file" class="form-control" name="image[]" multiple />
+          </div>
         </div>
         <input type="hidden" name="lat" id="lat" />
          {{ csrf_field() }}
         <input type="hidden" name="lng" id="lng"/>
+
         <button type="submit" class="btn btn-primary">Create</button>
       </form>
     </div>
@@ -125,55 +144,51 @@
 </section>
 @stop
 
+@section("jquery")
+$('select').formSelect();
+$('#de').trumbowyg({
+  btns: [
+      ['viewHTML'],
+      ['undo', 'redo'], // Only supported in Blink browsers
+      ['formatting'],
+      ['strong', 'em', 'del'],
+      ['superscript', 'subscript'],
+      ['link'],
+      ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+      ['unorderedList', 'orderedList'],
+      ['horizontalRule'],
+      ['removeformat'],
+      ['fullscreen']
+  ],
+    autogrowOnEnter: true
+});
+$('#pet').change(function(){
+  $(".panel-body").html("wait...");
+  $.ajax({
+    url: "{{url('/api/pet')}}/"+$("#pet").val(),
+    type: "get",
+    success: function(result){
+      var ret = $.parseJSON(result);
+      var html = "";
+      $.each(ret, function(name,val){
+        html += '<div class="col s2"><label> <input type="radio" name="type" id="type'+val.id+'" value="'+val.id+'" /><span>'+val.name+'</span></label></div>';
+      });
+
+      if(html == "") html = "None";
+
+      $(".panel-body").html(html);
+  }});
+
+
+  $("#pettype").show();
+});
+
+@stop
 
 
 
 @section("bottom_include")
-<script src="{{ url("js/bootstrap3-wysihtml5.all.min.js") }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env("MAP_API_KEY","nothing") }}&libraries=places"></script>
-<script>
-$(document).ready(function(){
-
-  $('#pet').change(function(){
-    $(".panel-body").html("wait...");
-    $.ajax({
-      url: "{{url('/api/pet')}}/"+$("#pet").val(),
-      type: "get",
-      success: function(result){
-        var ret = $.parseJSON(result);
-        var html = "";
-        $.each(ret, function(name,val){
-          console.log(val);
-          html += '<label class="radios"> <input type="radio" name="type" id="type'+val.id+'" value="'+val.id+'">'+val.name+'</label>';
-        });
-
-        if(html == "") html = "None";
-
-        $(".panel-body").html(html);
-    }});
-
-
-    $("#pettype").show();
-  });
-
-  $('#de').wysihtml5({
-    toolbar: {
-                "font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
-                "emphasis": true, //Italics, bold, etc. Default true
-                "lists": true, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
-                "html": false, //Button which allows you to edit the generated HTML. Default false
-                "link": true, //Button to insert a link. Default true
-                "image": false, //Button to insert an image. Default true,
-                "color": false, //Button to change color of font
-                "blockquote": true, //Blockquote
-                "fa": true,
-              }
-  });
-
-
-
-})
-
 </script>
 <script>
       var map;

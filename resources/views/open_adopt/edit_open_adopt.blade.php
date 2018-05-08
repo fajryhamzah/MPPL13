@@ -1,4 +1,4 @@
-@extends("layout.index")
+@extends("layout.index_dashboard")
 
 @section("meta")
   <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -171,7 +171,7 @@ die("asfsafsa");
                     <div class="block">
                         <div class="title text-center">
                             <h2>@lang("homepage.interested")</h2>
-                            <a href="{{ url("register") }}"><button class="btn btn-success btn-lg">@lang("homepage.botton_join")</button></a>
+                            <a href="{{ url("register") }}"><button class="btn btn-success btn-lg">@lang("homepage.bottom_join")</button></a>
                         </div>
                     </div>
 

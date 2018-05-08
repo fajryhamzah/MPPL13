@@ -1,7 +1,7 @@
-@extends("layout.index")
+@extends("layout.index_dashboard")
 @section("content")
 @include("layout.menu.afterLogin")
-<section class="sec">
+<section>
   <div class="container">
     <div class="row">
       <span>{{\Session::get("error")}}</span>
@@ -9,22 +9,23 @@
         <a href="{{ url("open_adopt") }}"><button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus-square"></i> Add New Adoption</button></a>
       </div>
 
-      @foreach($own as $a)
-        <div class="col-sm-6 col-md-4">
-          <div class="thumbnail">
-            <div class="caption">
-              <h3>{{$a->title}}</h3>
-              <span>{{ $a->post_date }}</span> |
-              <span>{{ $a->pet }}</span> |
-              <span>{{ ($a->status == 1)? "Open":"Closed" }}</span>
-              <p>
+      <div class="row">
+        @foreach($own as $a)
+          <div class="col m4">
+            <div class="card">
+              <div class="card-content">
+                <span class="card-title">{{$a->title}}</span>
+                <p>{{ $a->post_date }} {{ $a->pet }} {{ ($a->status == 1)? "Open":"Closed" }}</p>
+              </div>
+              <div class="card-action">
                 <a href="{{ url("open_adopt/edit/".$a->id) }}" class="btn btn-primary" role="button">Edit</a>
                 <a href="{{ url("open_adopt/delete/".$a->id) }}" class="btn btn-danger" role="button">Delete</a>
-              </p>
+              </div>
             </div>
           </div>
-        </div>
-      @endforeach
+        @endforeach
+      </div>
+
 
     </div>
   </div>
