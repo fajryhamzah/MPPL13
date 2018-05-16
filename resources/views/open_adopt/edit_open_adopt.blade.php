@@ -4,7 +4,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
 @section("top_include")
-<link rel="stylesheet" type="text/css" href="{{ url("css/bootstrap3-wysihtml5.min.css") }}"></link>
+<link rel="stylesheet" href="{{asset("js/ui/trumbowyg.min.css")}}">
 <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -70,6 +70,7 @@
         margin:5px;
       }
 </style>
+<script src="{{asset("js/trumbowyg.min.js")}}"></script>
 @stop
 
 @section("content")
@@ -78,125 +79,227 @@
   <div class="container">
     <div class="row">
       {{\Session::get("error")}}
-      <form name="new_adopt" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="pet">Pet Category</label>
-          <select name="category" id="pet" class="form-control">
-            <option value="" selected disabled>Please select</option>
-            @foreach($category as $a)
-              <option value="{{ $a->id }}" {{ ( ($data->category_pet == $a->id) || ($cate->parent_id == $a->id)) ? "selected":"" }}>{{ $a->name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="panel panel-default" id="pettype" >
-          <div class="panel-heading">
-            <h3 class="panel-title">Pet type</h3>
-          </div>
-          <div class="panel-body">
-            @foreach($child as $a)
-              <label class="radios"> <input type="radio" name="type" id="type{{$a->id}}" value="{{$a->id}}" {{ ($data->category_pet == $a->id) ? "checked":"" }}>{{$a->name}}</label>
-            @endforeach
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="tit">Title</label>
-          <input type="text" name="title" class="form-control" id="tit" placeholder="Title of the post" value="{{$data->title}}"/>
-        </div>
-        <div class="form-group">
-          <label for="de">Description</label>
-          <textarea name="desc" id="de" style="width: 100%">{{$data->description}}</textarea>
-        </div>
-        <div class="form-group" style="width:100%; height:100%;">
-          <label for="pac-input">Pet location</label>
-          <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-          <div id="map"></div>
-        </div>
-        <div class="form-group">
-          <label for="Product Name">Pet photos (can attach more than one):</label>
-          <input type="file" class="form-control" name="image[]" multiple />
-        </div>
+      <form name="edit_adopt" method="post" id="open_post" enctype="multipart/form-data">
         <div class="row">
+          <div class="input-field col s6">
+            <select name="category" id="pet">
+              <option value="" disabled selected>@lang("open_post/open.choose")</option>
+              @foreach($category as $a)
+                <option value="{{ $a->id }}" {{ ( ($data->category_pet == $a->id) || ($cate->parent_id == $a->id)) ? "selected":"" }}>{{ $a->name }}</option>
+              @endforeach
+            </select>
+            <label>@lang("open_post/open.cate")</label>
+          </div>
+        </div>
+
+        <div  id="pettype">
+          <div class="row">
+            <div class="col s12">
+              <label>@lang("open_post/open.type")</label>
+            </div>
+            <div class="panel-body">
+              @foreach($child as $a)
+                <div class="col s2"><label>
+                  <input type="radio" name="type" id="type{{$a->id}}" value="{{$a->id}}" {{ ($data->category_pet == $a->id) ? "checked":"" }}/>
+                  <span>{{$a->name}}</span>
+                </label>
+              </div>
+              @endforeach
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s6">
+            <label for="tit">@lang("open_post/open.title")</label>
+            <input type="text" name="title" class="form-control" id="tit" placeholder="@lang("open_post/open.title_holder")" value="{{$data->title}}"/>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="input-field col s12">
+            <span>@lang("open_post/open.desc")</span>
+            <textarea name="desc" id="de">{{$data->description}}</textarea>
+          </div>
+        </div>
+
+        <div class="row" style="width:100%; height:100%;">
+          <div class="input-field col s12">
+            <span>@lang("open_post/open.loca")</span>
+            <input id="pac-input" class="controls" type="text" placeholder="@lang("open_post/open.loca_holder")">
+            <div id="map"></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="file-field input-field">
+            <div>
+              <span>@lang("open_post/open.photos")</span>
+            </div>
+            <div class="btn">
+              <span>@lang("open_post/open.upload")</span>
+              <input type="file" name="image[]" id="uplo" multiple>
+            </div>
+            <div class="file-path-wrapper" style="display:none">
+              <input class="file-path validate" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="row" id="preview">
+
+        </div>
+
+        <div class="row">
+          <div class="col s12">
+            <span>@lang("open_post/open.saved_image")</span>
+          </div>
           @foreach($img as $a)
-            <div class="col-sm-4 col-md-3" id="im{{$a->id}}">
-              <div class="thumbnail">
-                <img src="{{ asset("")."/img/product/".$a->link_name }}" style="width:100%;height:200px">
-                <div class="caption">
-                  <p><button type="button" class="btn btn-danger" onClick="deleteImg({{ $a->id }})">Delete</button></p>
-                </div>
+          <div class="col s3" style="width:350px;" id="im{{$a->id}}">
+            <div class="card">
+              <div class="card-image waves-effect waves-block waves-light">
+                <img class="activator" src="{{ asset("")."/img/product/".$a->link_name }}" style="width:350px;height:350px;">
+              </div>
+              <div class="card-action">
+                <button type="button" class="waves-effect waves-light btn red darken-4" onClick="deleteImg('{{ $a->id }}')">@lang("open_post/open.remove")</button>
+                <button type="button" class="waves-effect waves-light btn setas {{ ($a->is_featured == 1)? "disabled":""}}" id="sv{{ $a->id }}" onClick ="setasSaved('{{ $a->id }}')">@lang("open_post/open.set_as")</button>
               </div>
             </div>
+          </div>
           @endforeach
         </div>
-        <input type="hidden" name="lat" id="lat" value="{{$data->lati}}" />
-        <input type="hidden" name="img_before" id="img_bef" value="{{ $img_list }}" />
+
+        <input type="hidden" name="lat" id="lat" />
          {{ csrf_field() }}
-        <input type="hidden" name="lng" id="lng" value="{{$data->longi}}"/>
+        <input type="hidden" name="lng" id="lng"/>
+        <input type="hidden" name="featured" id="fea" value="{{ $img_id }}"/>
+        <input type="hidden" name="featuredMode" id="feam" value="{{ $img_mode }}"/>
+        <input type="hidden" name="img_list" id="myHack"/>
         <input type="hidden" name="id" value="{{$data->id}}"/>
-        <button type="submit" class="btn btn-primary">Edit</button>
+        <input type="hidden" name="img_before" id="img_bef" value="{{ $img_list }}" />
+        <div class="row">
+          <button type="submit" class="btn btn-primary" id="sub">@lang("open_post/open.save")</button>
+        </div>
       </form>
+
     </div>
   </div>
 </section>
 @stop
 
-@section("bottom_include")
-<script src="{{ url("js/bootstrap3-wysihtml5.all.min.js") }}"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env("MAP_API_KEY","nothing") }}&libraries=places"></script>
-<script>
-$(document).ready(function(){
-  var img_list = {{ $img_list }}
+@section("jquery")
+$('select').formSelect();
+$('#de').trumbowyg({
+  btns: [
+      ['viewHTML'],
+      ['undo', 'redo'], // Only supported in Blink browsers
+      ['formatting'],
+      ['strong', 'em', 'del'],
+      ['superscript', 'subscript'],
+      ['link'],
+      ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+      ['unorderedList', 'orderedList'],
+      ['horizontalRule'],
+      ['removeformat'],
+      ['fullscreen']
+  ],
+    autogrowOnEnter: true
+});
+$('#pet').change(function(){
+  $(".panel-body").html("wait...");
+  $.ajax({
+    url: "{{url('/api/pet')}}/"+$("#pet").val(),
+    type: "get",
+    success: function(result){
+      var ret = $.parseJSON(result);
+      var html = "";
+      $.each(ret, function(name,val){
+        html += '<div class="col s2"><label> <input type="radio" name="type" id="type'+val.id+'" value="'+val.id+'" /><span>'+val.name+'</span></label></div>';
+      });
 
-  deleteImg = function(id){
-    $("#im"+id).remove();
+      if(html == "") html = "None";
 
-    img_list = img_list.filter(function(item){
-        return item != id;
-    });
+      $(".panel-body").html(html);
+  }});
 
-    $("#img_bef").val(img_list);
+
+  $("#pettype").show();
+});
+var inc = 0;
+function addCard(files){
+  i = inc;
+  var a = '<div class="col s3" style="width:350px;" id="c'+i+'"><div class="card"><div class="card-image waves-effect waves-block waves-light"><img class="activator" src="'+files.target.result+'" style="width:350px;height:350px;"></div><div class="card-action"><button type="button" class="waves-effect waves-light btn red darken-4" onClick="deleteCard(\''+i+'\')">@lang("open_post/open.remove")</button><button type="button" class="waves-effect waves-light btn setas" id="s'+i+'" onClick ="setas(\''+i+'\')">@lang("open_post/open.set_as")</button></div></div></div>';
+  $("#preview").append(a);
+  inc += 1;
+}
+
+setas = function(id){
+  $(".setas").removeClass("disabled");
+  $("#s"+id).addClass("disabled");
+  $("#fea").val(img[id].name);
+  $("#feam").val('1');
+}
+
+setasSaved = function(id){
+  $(".setas").removeClass("disabled");
+  $("#sv"+id).addClass("disabled");
+  $("#fea").val(id);
+  $("#feam").val('0');
+}
+
+deleteCard = function(id){
+  $("#c"+id).hide('slow', function(){ $(this).remove(); });
+  img[id] = null;
+}
+
+var img = [];
+$("#uplo").on("change",function(evt){
+  $("#preview").html('');
+  img = [];
+  inc = 0;
+  for(var i = 0, f; f = evt.target.files[i]; i++){
+    img.push(f);
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      addCard(e);
+    }
+    reader.readAsDataURL(f);
   }
+});
 
-  $('#pet').change(function(){
-    $(".panel-body").html("wait...");
-    $.ajax({
-      url: "{{url('/api/pet')}}/"+$("#pet").val(),
-      type: "get",
-      success: function(result){
-        var ret = $.parseJSON(result);
-        var html = "";
-        $.each(ret, function(name,val){
-          console.log(val);
-          html += '<label class="radios"> <input type="radio" name="type" id="type'+val.id+'" value="'+val.id+'">'+val.name+'</label>';
-        });
+$("#sub").on("click",function(e){
+  e.preventDefault();
+  var imgName = {};
 
-        if(html == "") html = "None";
+  img.forEach(function(e,i){
+    if(e){
+      imgName[i] = e.name;
+    }
 
-        $(".panel-body").html(html);
-    }});
-
-
-    $("#pettype").show();
-  });
-
-  $('#de').wysihtml5({
-    toolbar: {
-                "font-styles": true, //Font styling, e.g. h1, h2, etc. Default true
-                "emphasis": true, //Italics, bold, etc. Default true
-                "lists": true, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
-                "html": false, //Button which allows you to edit the generated HTML. Default false
-                "link": true, //Button to insert a link. Default true
-                "image": false, //Button to insert an image. Default true,
-                "color": false, //Button to change color of font
-                "blockquote": true, //Blockquote
-                "fa": true,
-              }
   });
 
 
+  var im = JSON.stringify(imgName);
+  $("#myHack").val(im);
+  document.getElementById("open_post").submit();
+});
 
-})
+var img_list = {{ $img_list }}
 
-</script>
+deleteImg = function(id){
+  $("#im"+id).hide('slow', function(){ $(this).remove(); });
+
+  img_list = img_list.filter(function(item){
+      return item != id;
+  });
+
+  $("#img_bef").val(img_list);
+}
+
+@stop
+
+@section("bottom_include")
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env("MAP_API_KEY","nothing") }}&libraries=places"></script>
 <script>
       var map;
       var lat;

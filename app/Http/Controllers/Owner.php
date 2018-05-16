@@ -90,7 +90,6 @@ class Owner extends Controller
                 }
 
               }
-
           }
         }
 
@@ -115,6 +114,9 @@ class Owner extends Controller
       $data['img_list'] = $data['img']->map(function($item, $key){
         return $item->id;
       })->toJson();
+
+      $data['img_id'] = ($data['img']->where("is_featured",1)->first())? $data['img']->where("is_featured",1)->first()->id: null;
+      $data['img_mode'] = ($data['img_id'])? 0:1;
 
       if(!$data['data']){
         return \Redirect::to(url("/open"));
@@ -142,13 +144,17 @@ class Owner extends Controller
         return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
       }
 
+
       $title = $r->input("title");
       $desc = $r->input("desc");
       $cate = $r->input("category");
       $lat = $r->input("lat");
       $lng = $r->input("lng");
+      $mode = ($r->input("featuredMode"))? $r->input("featuredMode"): 0;
       $files = $r->file("image");
-      $img_bef = json_decode($r->input("img_before"),true);
+      @$img_bef = json_decode($r->input("img_before"),true);
+      $featured = $r->input("featured");
+      @$img_before_delete = json_decode($r->input("img_list"),true);
 
       $insert = AdoptThread::where("id",$r->input("id"))->where("poster_id",\Session::get("id"))->first();
 
@@ -178,6 +184,7 @@ class Owner extends Controller
         if(!$img_bef){
           $img_bef = array();
         }
+
         $delete = array_map(function($ob) use($img_bef){
             if(!in_array($ob['id'],$img_bef)) return $ob['id'];
         },$gal);
@@ -194,12 +201,39 @@ class Owner extends Controller
         //delete real file
         \File::delete($delete_file);
         $data_delete->delete();
+        //set all image featured flag to zero
+        Gallery::where("open_adoption_id",$r->input("id"))->update(["is_featured" => 0]);
 
-        if($files){
+        //if featured mode selected from saved image
+        if($mode == 0){
+          //selected image must exist
+          if(!in_array($featured,$delete)){
+
+            //update the selected image
+            Gallery::where("open_adoption_id",$r->input("id"))->where("id",$featured)->update(["is_featured" => 1]);
+
+          }
+        }
+
+        if(($files) && (!empty($img_before_delete))){
+          if( (!in_array($featured,$img_before_delete)) && ($mode == 1) ) $featured = $img_before_delete[0];
+
+
           foreach($files as $file){
-              $filename = md5(time().$file->getClientOriginalName()).".".$file->getClientOriginalExtension();
-              $file->move($path,$filename);
-              $url[] = array("open_adoption_id" => $insert->id,"link_name" => $id."/".$filename);
+              $name = $file->getClientOriginalName();
+              $ext = $file->getClientOriginalExtension();
+
+              if(in_array($name,$img_before_delete)){
+                $filename = md5(time().$name).".".$ext;
+                $file->move($path,$filename);
+
+                if($featured == $name){
+                  $url[] = array("open_adoption_id" => $insert->id,"link_name" => $id."/".$filename, "is_featured" => 1);
+                }else{
+                  $url[] = array("open_adoption_id" => $insert->id,"link_name" => $id."/".$filename, "is_featured" => 0);
+                }
+
+              }
           }
         }
 

@@ -15,4 +15,6 @@ return[
   "remove" => "Remove",
   "set_as" => "Set As Main Image",
   "create" => "Create",
+  "save" => "Save",
+  "saved_image" => "Saved Image",
 ];
