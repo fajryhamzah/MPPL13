@@ -33,6 +33,7 @@ class Owner extends Controller
           'category' => 'required',
           'lat' => 'required',
           'lng' => 'required',
+          'featured' => 'required',
           'image' => 'nullable',
           'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
       );
@@ -42,15 +43,14 @@ class Owner extends Controller
       if($validator->fails()){
         return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
       }
-
       $title = $r->input("title");
       $desc = $r->input("desc");
       $cate = $r->input("category");
       $lat = $r->input("lat");
       $lng = $r->input("lng");
       $files = $r->file("image");
-
-
+      $featured = $r->input("featured");
+      @$img_before_delete = json_decode($r->input("img_list"),true);
 
       $insert = new AdoptThread;
       $insert->title = $title;
@@ -71,17 +71,31 @@ class Owner extends Controller
         $path = public_path()."/img/product/".$id."/";
         $url = array();
 
-        if($files){
+        if(($files) && (!empty($img_before_delete))){
+          if(!in_array($featured,$img_before_delete)) $featured = $img_before_delete[0];
+
+
           foreach($files as $file){
-              $filename = md5(time().$file->getClientOriginalName()).".".$file->getClientOriginalExtension();
-              $file->move($path,$filename);
-              $url[] = array("open_adoption_id" => $insert->id,"link_name" => $id."/".$filename);
+              $name = $file->getClientOriginalName();
+              $ext = $file->getClientOriginalExtension();
+
+              if(in_array($name,$img_before_delete)){
+                $filename = md5(time().$name).".".$ext;
+                $file->move($path,$filename);
+
+                if($featured == $name){
+                  $url[] = array("open_adoption_id" => $insert->id,"link_name" => $id."/".$filename, "is_featured" => 1);
+                }else{
+                  $url[] = array("open_adoption_id" => $insert->id,"link_name" => $id."/".$filename, "is_featured" => 0);
+                }
+
+              }
+
           }
         }
 
 
         Gallery::insert($url);
-
 
         return \Redirect::to(url("/open"));
       }

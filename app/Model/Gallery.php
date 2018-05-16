@@ -10,5 +10,5 @@ class Gallery extends Model
   protected $table = 'gallery';
 	public $timestamps = false;
 	protected $primaryKey = 'id';
-	protected $fillable = ['open_adoption_id','link_name'];
+	protected $fillable = ['open_adoption_id','link_name','is_featured'];
 }

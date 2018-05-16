@@ -139,9 +139,6 @@
 </section>
 @stop
 
-
-
-
 @section("bottom_include")
 <script src="{{ url("js/bootstrap3-wysihtml5.all.min.js") }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env("MAP_API_KEY","nothing") }}&libraries=places"></script>
