@@ -17,4 +17,6 @@ return[
   "create" => "Create",
   "save" => "Save",
   "saved_image" => "Saved Image",
+  "error_map" => "You need to pick a location",
+  "error_cate" => "You need to choose a category",
 ];

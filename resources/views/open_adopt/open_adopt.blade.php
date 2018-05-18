@@ -79,16 +79,13 @@
 @include("layout.menu.afterLogin")
 <section>
   <div class="container" style="width:80%;margin-top:2%">
-
     <div class="row">
-
-
-
-        {{ dd(\Session::get("error")->first("category")) }}
-        {{ \Session::forget("error")}}
       <form name="new_adopt" method="post" id="open_post" enctype="multipart/form-data">
         <div class="row">
           <div class="input-field col s6">
+            @if(\Session::get("error"))
+              <span style="color:#d32f2f;display:block">@lang("open_post/open.error_cate")</span>
+            @endif
             <select name="category" id="pet">
               <option value="" disabled selected>@lang("open_post/open.choose")</option>
               @foreach($category as $a)
@@ -114,6 +111,7 @@
           <div class="input-field col s6">
             <label for="tit">@lang("open_post/open.title")</label>
             <input type="text" name="title" class="form-control" id="tit" placeholder="@lang("open_post/open.title_holder")"/>
+            <span class="helper-text red-text text-darken-4">{{ (\Session::get("error"))? \Session::get("error")->first("title") :"" }}</span>
           </div>
         </div>
 
@@ -122,11 +120,15 @@
           <div class="input-field col s12">
             <span>@lang("open_post/open.desc")</span>
             <textarea name="desc" id="de"></textarea>
+            <span class="helper-text red-text text-darken-4">{{ (\Session::get("error"))? \Session::get("error")->first("desc") :"" }}</span>
           </div>
         </div>
 
         <div class="row" style="width:100%; height:100%;">
           <div class="input-field col s12">
+            @if(\Session::get("error"))
+              <span style="color:#d32f2f;display:block">@lang("open_post/open.error_map")</span>
+            @endif
             <span>@lang("open_post/open.loca")</span>
             <input id="pac-input" class="controls" type="text" placeholder="@lang("open_post/open.loca_holder")">
             <div id="map"></div>
