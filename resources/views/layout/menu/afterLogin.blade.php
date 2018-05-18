@@ -8,6 +8,7 @@
   <!-- Dropdown Structure -->
   <ul id="dropdown2" class="dropdown-content">
     <li><a href="{{ url("open") }}">Open adoption</a></li>
+    <li><a href="{{ url("finder") }}">Find pet</a></li>
   </ul>
   <nav>
     <div class="nav-wrapper">

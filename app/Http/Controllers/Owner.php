@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Email;
 use App\Model\AdoptThread;
 use App\Model\PetCategory;
 use App\Model\Gallery;

@@ -5,6 +5,7 @@ return[
   "cate" => "Pet Category",
   "type" => "Pet type",
   "wait" => "Wait..",
+  "fill_first" => "Choose category first",
   "upload" => "Upload File",
   "title" => "Title",
   "title_holder" => "Title of the post",

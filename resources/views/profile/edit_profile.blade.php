@@ -2,7 +2,7 @@
 @section("content")
 @include("layout.menu.afterLogin")
   <section>
-    <div class="container">
+    <div class="container" style="margin-top:2%;">
       <div class="row">
         {{\Session::get("error")}}
         <div id="modal1" class="modal">
