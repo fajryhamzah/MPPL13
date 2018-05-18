@@ -79,7 +79,7 @@ class Dashboard extends Controller
     $validator = \Validator::make($r->all(), $rules);
 
     if($validator->fails()){
-        return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
+        return json_encode(array('code'=>403,'msg'=> $validator->errors()->all() ));
     }
 
     $username = $r->input("uname");
@@ -87,9 +87,12 @@ class Dashboard extends Controller
 
 
     //\DB::enableQueryLog();
-    $data = User::select("id","username","active")->where('username', $username)->orWhere("email",$username)->where('password', $password)->first();
+    $data = User::select("id","username","active")->where('password', $password)->where(
+      function($q) use($username){
+          $q->where('username', $username)->orWhere("email",$username);
+      })->first();
     //dd(\DB::getQueryLog());
-    if(is_null($data)){
+    if(!$data){
       return json_encode(array('code'=>403,'msg'=> "username and password is not match" ));
     }
 

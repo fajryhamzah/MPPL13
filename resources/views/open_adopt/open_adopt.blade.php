@@ -81,7 +81,11 @@
   <div class="container" style="width:80%;margin-top:2%">
 
     <div class="row">
-      {{\Session::get("error")}}
+
+
+
+        {{ dd(\Session::get("error")->first("category")) }}
+        {{ \Session::forget("error")}}
       <form name="new_adopt" method="post" id="open_post" enctype="multipart/form-data">
         <div class="row">
           <div class="input-field col s6">

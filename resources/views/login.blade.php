@@ -17,16 +17,16 @@
             <input type="password" name="pass" class="form-control" id="emai" placeholder="Password"/>
           </div>
           {{ csrf_field() }}
+          <div id="msg">
+
+          </div>
           <button type="submit" id="log">@lang("login.button")</button>
         </form>
-        <div id="msg">
 
-        </div>
       </div>
     </div>
   </div>
 </section>
-{{\Session::get("error")}}
 @stop
 @section("bottom_include")
   <script type="text/javascript">
@@ -44,8 +44,16 @@
           data: data,
           success: function(result){
             var ret = $.parseJSON(result);
-            if(ret["code"] == 403){
-              $("#msg").html(ret["msg"]);
+            if(ret["code"] != 200){
+              var val = ret["msg"];
+
+              if(val.constructor === Array){
+                val = '<div class="alert alert-danger" role="alert">'+val.join("<br>")+'</div>';
+              }
+              else{
+                val = '<div class="alert alert-danger" role="alert">'+val+'</div>';
+              }
+              $("#msg").html(val);
             }
             else{
               window.location = "{{  url("dashboard") }}";
