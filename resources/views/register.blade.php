@@ -21,11 +21,29 @@
             <input type="password" name="pass" class="form-control" id="pass" placeholder="make a strong password" />
           </div>
          {{ csrf_field() }}
+
+           @if(\Session::get("error"))
+              @if(is_array(\Session::get("error")))
+                <div class="alert alert-danger" role="alert">
+                  <ul>
+                  @foreach(\Session::get("error") as $a)
+                    <li>{{$a}}</li>
+                  @endforeach
+                  </ul>
+                </div>
+              @else
+                <div class="alert alert-danger" role="alert">
+                  {{\Session::get("error")}}
+                </div>
+              @endif
+
+           @endif
+
          <button type="submit" class="btn btn-primary">Register</button>
         </form>
       </div>
     </div>
   </div>
 </section>
-{{\Session::get("error")}}
+
 @stop

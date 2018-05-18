@@ -25,7 +25,7 @@ class Dashboard extends Controller
       $validator = \Validator::make($r->all(), $rules);
 
       if($validator->fails()){
-          return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
+          return \Redirect::back()->with(["error" => $validator->errors()->all()]);
       }
 
       $email = $r->input("email");
@@ -49,7 +49,8 @@ class Dashboard extends Controller
         return \Redirect::to(url("/register/success"));
       }
       catch(\Exception $e){
-        $msg = $e->getMessage();
+        //$msg = $e->getMessage();
+        $msg = trans("register.exist");
         return \Redirect::to(url("/register"))->with(["error" => $msg]);
       }
 
