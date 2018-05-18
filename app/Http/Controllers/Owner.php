@@ -141,7 +141,7 @@ class Owner extends Controller
       $validator = \Validator::make($r->all(), $rules);
 
       if($validator->fails()){
-        return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
+        return \Redirect::back()->with(["error" => $validator->errors()]);
       }
 
 
