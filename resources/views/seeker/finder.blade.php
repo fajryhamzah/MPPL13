@@ -37,9 +37,10 @@
                   <div class="input-field col s6">
                     <select name="radius" id="pet">
                       <option value="" disabled selected>@lang("seeker/finder.radius")</option>
-                      @foreach($category as $a)
-                        <option value="{{ $a->id }}">{{ $a->name }}</option>
-                      @endforeach
+                      <option value="1"><= 1 KM</option>
+                      <option value="3"><= 3 KM</option>
+                      <option value="5"><= 5 KM</option>
+                      <option value="6">>= 5 KM</option>
                     </select>
                     <label>@lang("open_post/open.cate")</label>
                   </div>
@@ -50,22 +51,25 @@
                     <div class="col s6">
                       <span>@lang("seeker/finder.preferences_loc") : </span>
                       <label>
-                        <input type="radio" name="pref" id="saved" value="saved" checked/>
+                        <input type="radio" name="pref" value="saved" id="saved" checked/>
                         <span>@lang("seeker/finder.saved_loc")</span>
                       </label>
                       <label>
-                        <input type="radio" name="pref" id="curr" value="current" />
+                        <input type="radio" name="pref" value="current" id="current" />
                         <span>@lang("seeker/finder.current_loc")</span>
                       </label>
                     </div>
                   </div>
                 </div>
-                <input type="hidden" name="lat" id="lat" />
+                @if(!$lati)
+                  <span>@lang("seeker/finder.set_loc")</span>
+                @endif
                  {{ csrf_field() }}
-                <input type="hidden" name="lng" id="lng"/>
+                <input type="hidden" name="lat" id="lat" value="{{ $lati }}"/>
+                <input type="hidden" name="lng" id="lng" value="{{ $longi }}"/>
                   <div class="row">
                     <div class="input-field col s6">
-                      <button type="submit" class="btn btn-primary">@lang("seeker/finder.search_button")</button>
+                      <button type="submit" class="btn btn-primary disabled" id="sub">@lang("seeker/finder.search_button")</button>
                     </div>
                   </div>
               </form>
@@ -77,6 +81,42 @@
 
 @section("jquery")
 $('select').formSelect();
+
+var currentLatitude = {{ $lati or "null" }};
+var currentLongitude = {{ $longi or "null" }};
+var lat;
+var long;
+
+if($("#lat").val()) $("#sub").removeClass("disabled");
+
+$('#lat').trigger('contentchanged');
+
+$("#lat").on('contentchanged', function() {
+    if($(this).val()) $("#sub").removeClass("disabled");
+});
+
+$("#saved").on("click",function(){
+  $("#lat").val(currentLatitude);
+  $("#lng").val(currentLongitude);
+});
+
+function showLoca(posi){
+  lat = posi.coords.latitude;
+  long = posi.coords.longitude;
+  console.log(lat);
+  console.log(long);
+}
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showLoca);
+} else {
+    alert("Geolocation is not supported by this browser.");
+}
+
+$("#current").on("click",function(){
+  $("#lat").val(lat);
+  $("#lng").val(long);
+});
 
 $('#pet').change(function(){
   $(".panel-body").html("wait...");
@@ -94,7 +134,7 @@ $('#pet').change(function(){
         html = "None";
       }
       else{
-        html = '<div class="col s2"><label> <input type="radio" name="type" id="typeall" value="*" /><span>All</span></label></div>'+html;
+        html = '<div class="col s2"><label> <input type="radio" name="type" id="typeall" value="*" checked/><span>All</span></label></div>'+html;
       }
 
       $(".panel-body").html(html);

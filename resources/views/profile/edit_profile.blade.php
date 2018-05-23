@@ -222,17 +222,21 @@
         placeMarker(myLatlng);
 
       }
-          map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: {{ ($lati) ? $lati :  "-6.914744" }}, lng: {{ ($longi) ? $longi :  "107.609810" }} },
-            disableDefaultUI: true, // a way to quickly hide all controls
-            zoom: 17,
-            gestureHandling: 'greedy'
-          });
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: {{ ($lati) ? $lati :  "-6.914744" }}, lng: {{ ($longi) ? $longi :  "107.609810" }} },
+        disableDefaultUI: true, // a way to quickly hide all controls
+        zoom: 17,
+        gestureHandling: 'greedy'
+      });
 
-          @if($lati)
-            lat = {{ ($lati) ? $lati :  "-6.914744" }};
-            long = {{ ($longi) ? $longi :  "107.609810" }};
-          @endif
+      @if($lati)
+        lat = {{ ($lati) ? $lati :  "-6.914744" }};
+        long = {{ ($longi) ? $longi :  "107.609810" }};
+        var myLatlng = new google.maps.LatLng(lat,long);
+        setLatLng();
+        map.setCenter(myLatlng)
+        placeMarker(myLatlng);
+      @endif
 
 
         // Create the search box and link it to the UI element.

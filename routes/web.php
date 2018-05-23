@@ -60,11 +60,12 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
 
   //profile
-  Route::get("profile","Profile@editProfile");
-  Route::post("profile","Profile@editProfileSave");
+  Route::get("setting/profile","Profile@editProfile");
+  Route::post("setting/profile","Profile@editProfileSave");
 
   //finder
   Route::get("finder","Seeker@finder");
+  Route::post("finder","Seeker@finderAction");
 
 
   Route::get('logout','Dashboard@logout');
