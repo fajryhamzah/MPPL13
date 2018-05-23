@@ -1,15 +1,14 @@
 <?php
 
 return[
-  "title" => "Adopt, Don’t Shop!",
+  "title" => "JUST ADOPT, DON’T SHOP!",
   "subtitle" => "Adopet is a website where shelters and rescues list their pets for adoption.",
-  "top_join" => "Join Us Now",
-  "top_login" => "Already have an account",
   "buddy" => "Find your new buddy",
   "subbuddy" => "You can find a pet with your own preferences very easy.",
+  "features" => "Features",
   "owner" => "Choose new owner",
   "subowner" => "You can give your beloved pet to the right people.",
-  "why" => "Why adopt?",
+  "why" => "Why adopet?",
   "save" => "Save a life",
   "subsave" => "To judge our effectiveness by the extent to which animal lives are saved and improved, and by the positive experience of the people we touch",
   "cost" => "It’ll cost less",
@@ -18,8 +17,10 @@ return[
   "subhero" => "be a hero to protect animals. we believe, we can save them",
   "mission" => "Our Mission",
   "submission" => "We want all pet have someone that loved them, provide them warm place and something to eat so they can happily live.",
-  "vision" => "Our Vision",
+  "vision" => "Vision & Mission",
+  "title_vision" => "Our Vision",
   "subvision" => "We want to be the leading authority in animal care and protection.",
   "interested" => "Interested?",
+  "sub_inte" => "What are you waiting for? let's find your new buddy and it's absolutely free.",
   "bottom_join" => "Join Us",
 ];
