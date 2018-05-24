@@ -27,12 +27,27 @@ class Dashboard extends Controller
       $validator = \Validator::make($r->all(), $rules);
 
       if($validator->fails()){
-          return \Redirect::back()->with(["error" => $validator->errors()->all()]);
+          return \Redirect::back()->with(["error" => $validator->errors()]);
       }
 
       $email = $r->input("email");
       $username = $r->input("uname");
       $password = md5($r->input("pass"));
+      $msg = array();
+
+      //check email if not exist
+      if(User::where("email",$email)->first()){
+        $msg["email"] = trans("register.email_exist");
+      }
+
+      //check username if not exist
+      if(User::where("username",$username)->first()){
+        $msg["uname"] = trans("register.username_exist");
+      }
+
+      if(!empty($msg)){
+        return \Redirect::back()->with(["msg" => $msg]);
+      }
 
       $insert = new User;
       $insert->email = $email;
@@ -96,7 +111,7 @@ class Dashboard extends Controller
       })->first();
     //dd(\DB::getQueryLog());
     if(!$data){
-      return json_encode(array('code'=>403,'msg'=> "username and password is not match" ));
+      return json_encode(array('code'=>402,'msg'=> "username and password is not match" ));
     }
 
     if($data->active == 0){

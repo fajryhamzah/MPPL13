@@ -80,6 +80,7 @@
 
 @section("bottom_include")
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env("MAP_API_KEY","nothing") }}&libraries=places"></script>
+<script src="{{ asset("js/markerclusterer.js")}}"></script>
 @stop
 
 @section("jquery")
@@ -100,7 +101,7 @@
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: {{ $lati or  "-6.914744" }}, lng: {{$longi or  "107.609810" }} },
         disableDefaultUI: true, // a way to quickly hide all controls
-        zoom: 60,
+        zoom: 20,
         gestureHandling: 'greedy'
       });
 
@@ -149,15 +150,18 @@
                       if(ids.indexOf(resp[i]["id"]) <= -1){
                         marker = new google.maps.Marker({
                           position: new google.maps.LatLng(resp[i]["lati"], resp[i]["longi"]),
-                          map: map,
                           title: resp[i]["title"]
                         });
+
+
 
                         markers.push(marker);
                         ids.push(resp[i]["id"]);
                       }
-                      
+
                     }
+                    var markerCluster = new MarkerClusterer(map, markers,
+        {imagePath: '{{ asset("images/m/m")}}'});
                   }
 
                },

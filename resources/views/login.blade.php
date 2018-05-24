@@ -17,19 +17,17 @@
 
                 <div class ="row">
                   <div class="input-field col s12">
-                    <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" />
-                    <label for="email">Username/Email</label>
+                    <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" required/>
+                    <label for="email" class="lbl">Username/Email</label>
+                    <span class="helper-text" style="color:rgb(244, 67, 54)"></span>
                   </div>
                   <div class="input-field col s12">
-                    <input type="password" name="pass" class="form-control" id="emai"/>
-                    <label for="emai">Password</label>
+                    <input type="password" name="pass" class="form-control" id="emai" required/>
+                    <label for="emai" class="lbl">Password</label>
                   </div>
                 </div>
 
                 {{ csrf_field() }}
-                <div id="msg">
-
-                </div>
                 <div class ="row">
                   <div class="col s12">
                     <button type="submit" class="btn" id="log">@lang("login.button")</button>
@@ -68,15 +66,18 @@
           success: function(result){
             var ret = $.parseJSON(result);
             if(ret["code"] != 200){
-              var val = ret["msg"];
 
-              if(val.constructor === Array){
-                val = '<div class="alert alert-danger" role="alert">'+val.join("<br>")+'</div>';
+              if(ret["code"] == 403){
+                $(".lbl").addClass("active");
+                $(".form-control").addClass("invalid");
+                $(".helper-text").html("@lang("login.error_active")");
               }
               else{
-                val = '<div class="alert alert-danger" role="alert">'+val+'</div>';
+                $(".lbl").addClass("active");
+                $(".form-control").addClass("invalid");
+                $(".helper-text").html("@lang("login.error")");
               }
-              $("#msg").html(val);
+
             }
             else{
               window.location = "{{  url("dashboard") }}";
