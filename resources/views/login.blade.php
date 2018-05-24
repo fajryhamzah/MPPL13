@@ -2,28 +2,49 @@
 
 @section("content")
 @include("layout.menu.main")
-<section class="sec">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-4">
-        <form name="login" method="post" id="login">
-          <div class="form-group">
-            <label for="email">Username/Email</label>
-            <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" placeholder="Username or email"/>
-            <small id="emailH" class="form-text text-muted">@lang("login.info")</small>
-          </div>
-          <div class="form-group">
-            <label for="emai">Password</label>
-            <input type="password" name="pass" class="form-control" id="emai" placeholder="Password"/>
-          </div>
-          {{ csrf_field() }}
-          <div id="msg">
+<section id="log_in">
+  <div class="row">
 
-          </div>
-          <button type="submit" id="log">@lang("login.button")</button>
-        </form>
+    <div class="col s12">
+        <div class="col s6" style="float:none;margin:0 auto;">
+          <div class="card" style="padding:5%;margin-top:20%">
+            <div class="card-content black-text">
+              <img src="{{ asset("images/logo2.png")}}" />
+              <span class="card-title">@lang("login.sign_in")</span>
+              <p>@lang("login.sub_sign_in")</p>
 
-      </div>
+              <form name="login" method="post" id="login">
+
+                <div class ="row">
+                  <div class="input-field col s12">
+                    <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" placeholder="Username or email"/>
+                    <label for="email">Username/Email</label>
+                  </div>
+                </div>
+
+                <div class ="row">
+                  <div class="input-field col s12">
+                    <input type="password" name="pass" class="form-control" id="emai" placeholder="Password"/>
+                    <label for="emai">Password</label>
+                  </div>
+                </div>
+
+                {{ csrf_field() }}
+                <div id="msg">
+
+                </div>
+                <div class ="row">
+                  <div class="col s12">
+                    <button type="submit" class="btn" id="log">@lang("login.button")</button>
+                  </div>
+                </div>
+              </form>
+
+              <span>@lang("login.sign_up")</span>
+            </div>
+          </div>
+        </div>
+
     </div>
   </div>
 </section>
