@@ -6,7 +6,7 @@
   <div class="row">
 
     <div class="col s12">
-        <div class="col s6" style="float:none;margin:0 auto;">
+        <div class="col s4" style="float:none;margin:0 auto;">
           <div class="card" style="padding:5%;margin-top:20%">
             <div class="card-content black-text">
               <img src="{{ asset("images/logo2.png")}}" />
@@ -17,14 +17,11 @@
 
                 <div class ="row">
                   <div class="input-field col s12">
-                    <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" placeholder="Username or email"/>
+                    <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" />
                     <label for="email">Username/Email</label>
                   </div>
-                </div>
-
-                <div class ="row">
                   <div class="input-field col s12">
-                    <input type="password" name="pass" class="form-control" id="emai" placeholder="Password"/>
+                    <input type="password" name="pass" class="form-control" id="emai"/>
                     <label for="emai">Password</label>
                   </div>
                 </div>
@@ -39,8 +36,13 @@
                   </div>
                 </div>
               </form>
+              <div class ="row center-align" style="margin-bottom:0;">
+                <div class="col s12">
+                    <span>@lang("login.sign_up")</span>
+                </div>
+              </div>
 
-              <span>@lang("login.sign_up")</span>
+
             </div>
           </div>
         </div>

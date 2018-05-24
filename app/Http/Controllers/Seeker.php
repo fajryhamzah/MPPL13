@@ -12,6 +12,15 @@ use App\Model\User;
 class Seeker extends Controller
 {
 
+  public function index(){
+    $location = User::select("lati","longi")->where("id",\Session::get('id'))->first();
+    $data['lati'] = $location->lati;
+    $data['longi'] = $location->longi;
+
+
+    return view("seeker.maps",$data);
+  }
+
   public function finder(){
     $data['category'] = PetCategory::where("parent_id",null)->get();
     $location = User::select("lati","longi")->where("id",\Session::get('id'))->first();

@@ -58,14 +58,18 @@ Route::group(['middleware' => 'hasLogin'], function () {
   //get all type of Pet
   Route::get("api/pet/{parent}","Dashboard@childTypePet");
 
+  //list of pet in current bound
+  Route::post("api/pet/location","Dashboard@getAllLocation");
+
 
   //profile
   Route::get("setting/profile","Profile@editProfile");
   Route::post("setting/profile","Profile@editProfileSave");
 
   //finder
-  Route::get("finder","Seeker@finder");
-  Route::post("finder","Seeker@finderAction");
+  Route::get("finder","Seeker@index");
+  Route::get("advance_finder","Seeker@finder");
+  Route::post("advance_finder","Seeker@finderAction");
 
 
   Route::get('logout','Dashboard@logout');

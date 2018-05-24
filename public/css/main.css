@@ -39,6 +39,8 @@ nav ul li{
   box-shadow: none;
   border:1px solid #ffffff;
   transition: none;
+  margin-right: 0px !important;
+  margin-left: 0px !important;
 }
 
 .nav-button:hover{
@@ -117,6 +119,10 @@ h6{
   margin-bottom: 10%;
 }
 
+#vision h5{
+  font-weight: bold;
+}
+
 #vision h4, #interest h4{
   text-align: center;
   margin-top: 5%;
@@ -133,12 +139,14 @@ h6{
 
 #interest h4{
   color: #ffffff;
+  margin-bottom: 6%
 }
 
 #interest span{
   display: block;
   color: #ffffff;
-  margin-bottom:5%;
+  margin-bottom:3%;
+  font-size: 1.9rem;
 }
 
 footer{
@@ -159,4 +167,16 @@ footer{
   width:100%;
   border-radius: 50px;
   background: rgb(0, 183, 230);
+}
+
+#login, #regist{
+  margin-top:10px;
+}
+
+.card-content img{
+  margin-bottom:10px;
+}
+
+.card-title{
+  margin-bottom:0 !important;
 }
