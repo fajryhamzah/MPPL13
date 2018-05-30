@@ -34,6 +34,8 @@ class Owner extends Controller
           'lng' => 'required',
           'featured' => 'required',
           'image' => 'nullable',
+          'gender' => 'required|min:0|max:1',
+          'age' => 'required|min:0|max:360',
           'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
       );
 
@@ -47,6 +49,8 @@ class Owner extends Controller
       $cate = $r->input("category");
       $lat = $r->input("lat");
       $lng = $r->input("lng");
+      $gender = $r->input("gender");
+      $age = $r->input("age");
       $files = $r->file("image");
       $featured = $r->input("featured");
       @$img_before_delete = json_decode($r->input("img_list"),true);
@@ -61,6 +65,8 @@ class Owner extends Controller
       $insert->lati = $lat;
       $insert->longi = $lng;
       $insert->status = 1;
+      $insert->gender = $gender;
+      $insert->age = $age;
       $insert->post_date = date('Y-m-d h:i:s',time());
 
       try{

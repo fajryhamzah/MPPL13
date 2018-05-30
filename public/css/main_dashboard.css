@@ -1,0 +1,49 @@
+#profile-icon{
+  width:55px;
+  height:55px;
+  vertical-align: middle;
+}
+
+.brand-logo{
+  margin-left:20px
+}
+
+nav{
+  background:rgb(255, 255, 255);
+
+}
+
+nav a{
+  color:rgb(170, 170, 170) !important;
+}
+
+.dropdown-content{
+  top:100% !important;
+}
+
+.ezdz-dropzone{
+  width:100% !important;
+  min-height: 300px !important;
+  height:auto !important;
+  line-height: normal !important;
+}
+
+#uplo{
+  margin-left: 0 !important;
+  left:0 !important;
+}
+
+.helper{
+  margin-bottom: 10px;
+  display: block;
+}
+
+.helper-text{
+  display: inline;
+}
+
+footer{
+  background: rgb(0, 190, 227);
+  padding:1%;
+  color:#ffffff;
+}

@@ -4,6 +4,7 @@
 @stop
 @section("top_include")
 <link rel="stylesheet" href="{{asset("js/ui/trumbowyg.min.css")}}">
+<link rel="stylesheet" href="{{asset("css/ezdz.min.css")}}">
 <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -69,8 +70,20 @@
       .radios input{
         margin:5px;
       }
+
+      .btn{
+        float:none !important;
+        margin: 5px 5px 5px 0px;
+        border-radius: 50px;
+      }
+
+      .card-action{
+        padding: 0px !important;
+
+      }
 </style>
 <script src="{{asset("js/trumbowyg.min.js")}}"></script>
+<script src="{{asset("js/ezdz.min.js")}}"></script>
 @stop
 
 
@@ -80,91 +93,111 @@
 <section>
   <div class="container" style="width:80%;margin-top:2%">
     <div class="row">
-      <form name="new_adopt" method="post" id="open_post" enctype="multipart/form-data">
-        <div class="row">
-          <div class="input-field col s6">
-            @if(\Session::get("error"))
-              @if(\Session::get("error")->has("category"))
-                <span style="color:#d32f2f;display:block">@lang("open_post/open.error_cate")</span>
-              @endif
-            @endif
-            <select name="category" id="pet">
-              <option value="" disabled selected>@lang("open_post/open.choose")</option>
-              @foreach($category as $a)
-                <option value="{{ $a->id }}">{{ $a->name }}</option>
-              @endforeach
-            </select>
-            <label>@lang("open_post/open.cate")</label>
-          </div>
-        </div>
-
-        <div  id="pettype" style="display:none">
+      <div class="col s8 offset-s2">
+        <form name="new_adopt" method="post" id="open_post" enctype="multipart/form-data">
           <div class="row">
-            <div class="col s12">
+            <div class="input-field col s5">
+              @if(\Session::get("error"))
+                @if(\Session::get("error")->has("category"))
+                  <span style="color:#d32f2f;display:block">@lang("open_post/open.error_cate")</span>
+                @endif
+              @endif
+              <select name="category" id="pet">
+                <option value="" disabled selected>@lang("open_post/open.choose")</option>
+                @foreach($category as $a)
+                  <option value="{{ $a->id }}">{{ $a->name }}</option>
+                @endforeach
+              </select>
+              <label>@lang("open_post/open.cate")</label>
+            </div>
+
+            <div id="pettype" class="input-field col s5 offset-s1">
+              @if(\Session::get("error"))
+                @if(\Session::get("error")->has("category"))
+                  <span style="color:#d32f2f;display:block">@lang("open_post/open.error_cate")</span>
+                @endif
+              @endif
+              <select name="type" id="ty" disabled>
+                <option value="" disabled selected>@lang("open_post/open.choose")</option>
+                  <option disabled>
+                    @lang("open_post/open.choose_pet_first")
+                  </option>
+              </select>
               <label>@lang("open_post/open.type")</label>
             </div>
-            <div class="panel-body">
-              @lang("open_post/open.wait")
+
+          </div>
+
+          <div class="row">
+            <div class="input-field col s5">
+              <label for="tit">@lang("open_post/open.title")</label>
+              <input type="text" name="title" class="form-control" id="tit" placeholder="@lang("open_post/open.title_holder")"/>
+              <span class="helper-text red-text text-darken-4">{{ (\Session::get("error"))? \Session::get("error")->first("title") :"" }}</span>
+            </div>
+
+            <div class="input-field col s5 offset-s1">
+              <select name="gender">
+                <option value="0">@lang("open_post/open.male")</option>
+                <option value="1">@lang("open_post/open.female")</option>
+              </select>
+              <label>@lang("open_post/open.gender")</label>
             </div>
           </div>
-        </div>
 
-        <div class="row">
-          <div class="input-field col s6">
-            <label for="tit">@lang("open_post/open.title")</label>
-            <input type="text" name="title" class="form-control" id="tit" placeholder="@lang("open_post/open.title_holder")"/>
-            <span class="helper-text red-text text-darken-4">{{ (\Session::get("error"))? \Session::get("error")->first("title") :"" }}</span>
+          <div class="row">
+            <div class="input-field col s3">
+              <label for="age">@lang("open_post/open.age")</label>
+              <input type="number" id="age" name="age" min="0" max="360" />
+              <span class="helper-text" style="display:inline;">@lang("open_post/open.age_helper")</span>
+            </div>
           </div>
-        </div>
 
 
-        <div class="row">
-          <div class="input-field col s12">
-            <span>@lang("open_post/open.desc")</span>
-            <textarea name="desc" id="de"></textarea>
-            <span class="helper-text red-text text-darken-4">{{ (\Session::get("error"))? \Session::get("error")->first("desc") :"" }}</span>
+          <div class="row" style="margin-bottom:0;">
+            <div class="input-field col s12">
+              <span>@lang("open_post/open.desc")</span>
+              <textarea name="desc" id="de"></textarea>
+              <span class="helper-text red-text text-darken-4">{{ (\Session::get("error"))? \Session::get("error")->first("desc") :"" }}</span>
+            </div>
           </div>
-        </div>
 
-        <div class="row" style="width:100%; height:100%;">
-          <div class="input-field col s12">
-            @if(\Session::get("error"))
-              @if(\Session::get("error")->has("lat"))
-                <span style="color:#d32f2f;display:block">@lang("open_post/open.error_map")</span>
+          <div class="row" style="width:100%; height:100%;">
+            <div class="input-field col s12">
+              @if(\Session::get("error"))
+                @if(\Session::get("error")->has("lat"))
+                  <span style="color:#d32f2f;display:block">@lang("open_post/open.error_map")</span>
+                @endif
               @endif
-            @endif
-            <span>@lang("open_post/open.loca")</span>
-            <input id="pac-input" class="controls" type="text" placeholder="@lang("open_post/open.loca_holder")">
-            <div id="map"></div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="file-field input-field">
-            <div>
-              <span>@lang("open_post/open.photos")</span>
-            </div>
-            <div class="btn">
-              <span>@lang("open_post/open.upload")</span>
-              <input type="file" name="image[]" id="uplo" multiple>
-            </div>
-            <div class="file-path-wrapper" style="display:none">
-              <input class="file-path validate" type="text">
+              <span class="helper">@lang("open_post/open.loca")</span>
+              <input id="pac-input" class="controls" type="text" placeholder="@lang("open_post/open.loca_holder")">
+              <div id="map"></div>
             </div>
           </div>
-        </div>
-        <div class="row" id="preview">
 
-        </div>
-        <input type="hidden" name="lat" id="lat" />
-         {{ csrf_field() }}
-        <input type="hidden" name="lng" id="lng"/>
-        <input type="hidden" name="featured" id="fea"/>
-        <input type="hidden" name="img_list" id="myHack"/>
-        <div class="row">
-          <button type="submit" class="btn btn-primary" id="sub">@lang("open_post/open.create")</button>
-        </div>
-      </form>
+          <div class="row">
+            <div class="file-field input-field col s12">
+              <div>
+                <span class="helper">@lang("open_post/open.photos")</span>
+              </div>
+              <input type="file" name="image[]" id="uplo" multiple class="col s12">
+              <div class="file-path-wrapper" style="display:none">
+                <input class="file-path validate" type="text">
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" name="lat" id="lat" />
+           {{ csrf_field() }}
+          <input type="hidden" name="lng" id="lng"/>
+          <input type="hidden" name="featured" id="fea"/>
+          <input type="hidden" name="img_list" id="myHack"/>
+          <div class="row">
+            <div class="col s12" style="text-align:center">
+              <button type="submit" class="btn btn-primary" id="sub" style="border-radius:0">@lang("open_post/open.create")</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
   </div>
@@ -173,6 +206,11 @@
 
 @section("jquery")
 $('select').formSelect();
+$('#uplo').ezdz({
+  text: "@lang("open_post/open.drop_image")",
+  previewImage: false,
+});
+
 $('#de').trumbowyg({
   btns: [
       ['viewHTML'],
@@ -189,31 +227,37 @@ $('#de').trumbowyg({
   ],
     autogrowOnEnter: true
 });
+
+
 $('#pet').change(function(){
-  $(".panel-body").html("wait...");
+  $("#ty").empty();
+  $("#ty").append("<option disabled>@lang("open_post/open.wait")</option>");
+  $("#ty").prop("disabled",false);
+  $("#ty").formSelect();
   $.ajax({
     url: "{{url('/api/pet')}}/"+$("#pet").val(),
     type: "get",
     success: function(result){
       var ret = $.parseJSON(result);
+      $("#ty").empty();
       var html = "";
+      $("#ty").append('<option disabled selected>@lang("open_post/open.choose")</option>');
       $.each(ret, function(name,val){
-        html += '<div class="col s2"><label> <input type="radio" name="type" id="type'+val.id+'" value="'+val.id+'" /><span>'+val.name+'</span></label></div>';
+        html += val.id;
+        $("#ty").append('<option value="'+val.id+'" >'+val.name+'</option>');
       });
 
-      if(html == "") html = "None";
+      if(html == "") $("#ty").append('<option disabled>None</option>');
 
-      $(".panel-body").html(html);
+      $("#ty").formSelect();
   }});
-
-
-  $("#pettype").show();
 });
 var inc = 0;
+
 function addCard(files){
   i = inc;
-  var a = '<div class="col s3" style="width:350px;" id="c'+i+'"><div class="card"><div class="card-image waves-effect waves-block waves-light"><img class="activator" src="'+files.target.result+'" style="width:350px;height:350px;"></div><div class="card-action"><button type="button" class="waves-effect waves-light btn red darken-4" onClick="deleteCard(\''+i+'\')">@lang("open_post/open.remove")</button><button type="button" class="waves-effect waves-light btn setas" id="s'+i+'" onClick ="setas(\''+i+'\')">@lang("open_post/open.set_as")</button></div></div></div>';
-  $("#preview").append(a);
+  var a = '<div class="col s3" style="width:300px;" id="c'+i+'"><div class="card"><div class="card-image waves-effect waves-block waves-light"><img class="activator" src="'+files.target.result+'"></div><div class="card-action"><button type="button" class="waves-effect waves-light btn setas" id="s'+i+'" onClick ="setas(\''+i+'\')">@lang("open_post/open.set_as")</button><button type="button" class="waves-effect waves-light btn red darken-4" onClick="deleteCard(\''+i+'\')">@lang("open_post/open.remove")</button></div></div></div>';
+  $("#ezdz_prev").append(a);
   setas(i);
   inc += 1;
 }
@@ -229,8 +273,10 @@ deleteCard = function(id){
   img[id] = null;
 }
 var img = [];
+
 $("#uplo").on("change",function(evt){
-  $("#preview").html('');
+  $("#ezdz_prev").remove();
+  $(".ezdz-dropzone").append("<div id='ezdz_prev'></div>");
   img = [];
   inc = 0;
   for(var i = 0, f; f = evt.target.files[i]; i++){
@@ -272,6 +318,8 @@ $("#sub").on("click",function(e){
       var lat;
       var long;
       var marker = null;
+
+      //map
       function showLoca(posi){
         lat = posi.coords.latitude;
         long = posi.coords.longitude;

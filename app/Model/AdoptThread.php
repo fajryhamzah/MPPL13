@@ -12,5 +12,5 @@ class AdoptThread extends Model
   protected $table = 'open_adoption';
 	public $timestamps = false;
 	protected $primaryKey = 'id';
-	protected $fillable = ['title','description','poster_id','post_date','category_pet','lati','longi','status'];
+	protected $fillable = ['title','age','gender','description','poster_id','post_date','category_pet','lati','longi','status'];
 }

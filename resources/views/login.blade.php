@@ -19,7 +19,7 @@
                   <div class="input-field col s12">
                     <input type="text" name="uname" class="form-control" id="email" aria-describedby="emailH" required/>
                     <label for="email" class="lbl">Username/Email</label>
-                    <span class="helper-text" style="color:rgb(244, 67, 54)"></span>
+                    <span class="helper-text" style="color:rgb(244, 67, 54);display:none"></span>
                   </div>
                   <div class="input-field col s12">
                     <input type="password" name="pass" class="form-control" id="emai" required/>
@@ -71,11 +71,13 @@
                 $(".lbl").addClass("active");
                 $(".form-control").addClass("invalid");
                 $(".helper-text").html("@lang("login.error_active")");
+                $(".helper-text").show();
               }
               else{
                 $(".lbl").addClass("active");
                 $(".form-control").addClass("invalid");
                 $(".helper-text").html("@lang("login.error")");
+                $(".helper-text").show();
               }
 
             }

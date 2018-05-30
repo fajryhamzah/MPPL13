@@ -20,27 +20,28 @@
         <div class="col s12 center-align">
           <h4>@lang("homepage.why")</h4>
 
-          <div class="col s4 box">
-            <img src="{{asset("images/dumbbell.png")}}" />
+          <div class="col s4 box wow fadeInUp" data-wow-delay="0.5s">
+            <a class="hi-icon"><img src="{{asset("images/dumbbell.png")}}" /></a>
             <h6>@lang("homepage.hero")</h6>
             <div class="col s6 offset-s3">
               <span>@lang("homepage.subhero")</span>
             </div>
           </div>
-          <div class="col s4 box">
-            <img src="{{asset("images/heartbeat.png")}}" />
+          <div class="col s4 box wow fadeInUp" data-wow-delay="0.5s">
+            <a class="hi-icon"><img src="{{asset("images/heartbeat.png")}}" /></a>
             <h6>@lang("homepage.save")</h6>
             <div class="col s6 offset-s3">
               <span>@lang("homepage.subsave")</span>
             </div>
           </div>
-          <div class="col s4 box">
-            <img src="{{asset("images/cash.png")}}" />
+          <div class="col s4 box wow fadeInUp" data-wow-delay="0.5s">
+            <a class="hi-icon"><img src="{{asset("images/cash.png")}}" /></a>
             <h6>@lang("homepage.cost")</h6>
             <div class="col s6 offset-s3">
               <span>@lang("homepage.subcost")</span>
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -48,14 +49,20 @@
     <section id="features">
         <div class="row">
           <div class="col s6">
-            <h4>@lang("homepage.features")</h4>
+            <h4 class="wow fadeInUp">@lang("homepage.features")</h4>
 
-            <h5>@lang("homepage.buddy")</h5>
-            <span>@lang("homepage.subbuddy")</span>
-            <h5>@lang("homepage.owner")</h5>
-            <span>@lang("homepage.owner")</span>
+            <div class="wow fadeInUp" data-wow-delay="0.3s">
+              <h5>@lang("homepage.buddy")</h5>
+              <span>@lang("homepage.subbuddy")</span>
+            </div>
+
+            <div class="wow fadeInUp" data-wow-delay="0.5s">
+              <h5>@lang("homepage.owner")</h5>
+              <span>@lang("homepage.owner")</span>
+            </div>
+
           </div>
-          <div class="col s6">
+          <div class="col s6 wow fadeInUp">
             <img src="{{asset("images/features.png")}}"/ />
           </div>
         </div>
@@ -67,22 +74,22 @@
           <h4>@lang("homepage.vision")</h4>
 
           <div class="col s6" id="kiri">
-            <div class="col s3">
+            <div class="col s4 wow flipInY" data-wow-delay="0.7s">
                 <img src="{{asset("images/vision.png")}}" />
             </div>
-            <div class="col s6 subspan">
+            <div class="col s6 subspan wow fadeInRight">
                 <h5>@lang("homepage.title_vision")</h5>
                 <span>@lang("homepage.subvision")</span>
             </div>
           </div>
 
           <div class="col s6 offset-s6" id="kanan">
-            <div class="col s3">
-                <img src="{{asset("images/mission.png")}}" />
-            </div>
-            <div class="col s6 subspan">
+            <div class="col s6 subspan wow fadeInLeft">
                 <h5>@lang("homepage.mission")</h5>
                 <span>@lang("homepage.submission")</span>
+            </div>
+            <div class="col s3 wow flipInY" data-wow-delay="0.7s">
+                <img src="{{asset("images/mission.png")}}" />
             </div>
           </div>
 
@@ -93,9 +100,9 @@
     <section id="interest">
       <div class="row" style="margin-bottom:0">
         <div class="col s12 center-align">
-            <h4>@lang("homepage.interested")</h4>
+            <h4 class="wow fadeInUp">@lang("homepage.interested")</h4>
 
-            <div class="col s12">
+            <div class="col s12 wow fadeInUp" data-wow-delay="0.3s">
               <span>@lang("homepage.sub_inte")</span>
               <a class="btn nav-button" href="{{ url("register") }}">@lang("homepage.bottom_join")</a>
             </div>

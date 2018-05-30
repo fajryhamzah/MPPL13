@@ -105,7 +105,7 @@ class Dashboard extends Controller
 
 
     //\DB::enableQueryLog();
-    $data = User::select("id","username","active")->where('password', $password)->where(
+    $data = User::select("id","username","img","active")->where('password', $password)->where(
       function($q) use($username){
           $q->where('username', $username)->orWhere("email",$username);
       })->first();
@@ -120,6 +120,7 @@ class Dashboard extends Controller
 
     \Session::put('id', $data->id);
     \Session::put('username', $data->username);
+    \Session::put('img_profile', $data->img);
 
     return json_encode(array('code'=>200,'msg'=> "Ok" ));
   }

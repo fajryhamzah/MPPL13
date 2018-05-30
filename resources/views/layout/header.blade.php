@@ -20,8 +20,7 @@
         <script src="{{asset("js/materialize.min.js")}}"></script>
         <script src="{{asset("js/wow.min.js")}}"></script>
         <script>
-         new WOW(
-            ).init();
+         new WOW().init();
         </script>
         @yield("top_include")
     </head>

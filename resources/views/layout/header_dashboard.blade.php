@@ -9,7 +9,9 @@
         <!-- Fonts -->
         <!-- CSS -->
         <link rel="stylesheet" href="{{asset("css/materialize.min.css")}}">
+        <link rel="stylesheet" href="{{asset("css/main_dashboard.css")}}">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        @yield("css")
         <!--<link rel="stylesheet" href="{{asset("css/font-awesome.min.css")}}"> -->
 
         <!-- Js -->
