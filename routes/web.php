@@ -65,6 +65,10 @@ Route::group(['middleware' => 'hasLogin'], function () {
   //profile
   Route::get("setting/profile","Profile@editProfile");
   Route::post("setting/profile","Profile@editProfileSave");
+  Route::get("setting/change_password",function(){
+    return view("profile.change_password");
+  });
+  Route::post("setting/change_password","Profile@changePassword");
 
   //finder
   Route::get("finder","Seeker@index");

@@ -9,6 +9,7 @@ use App\Model\User;
 class Profile extends Controller
 {
 
+  //Profile Edit
   public function editProfile(){
     $data = User::select("username","email","bio","img","lati","longi","name")->where("id",\Session::get("id"))->first();
 
@@ -63,6 +64,52 @@ class Profile extends Controller
       $msg = $e->getMessage();
       return \Redirect::to(url("/profile"))->with(["error" => $msg]);
     }
+  }
+
+
+  //Change Password
+  public function changePassword(Request $r){
+    $rules = array(
+        'oldpass' => 'required',
+        'newpass' => 'required|min:4',
+        'confirmnewpass' => 'required|min:4',
+    );
+
+    $validator = \Validator::make($r->all(), $rules);
+
+    if($validator->fails()){
+        return \Redirect::back()->with(["error" => $validator->errors()]);
+    }
+
+    $old = $r->input("oldpass");
+    $new = $r->input("newpass");
+    $conf = $r->input("confirmnewpass");
+
+
+    if($new != $conf){
+      return \Redirect::back()->with(["different" => trans("profile/change_pass.different") ]);
+    }
+
+    $pass = md5($new);
+
+    $find = User::select("password")->where("id",\Session::get("id"))->first();
+
+    if($find->password != md5($old)){
+      return \Redirect::back()->with(["wrong" => trans("profile/change_pass.wrong") ]);
+    }
+
+    $find->password = $pass;
+
+    try{
+      $find->save();
+
+      return \Redirect::back()->with(["success" => trans("profile/change_pass.success") ]);
+    }
+    catch(\Exception $e){
+      return \Redirect::back()->with(["err" => $e->getMessage() ]);
+    }
+
+
   }
 
 }
