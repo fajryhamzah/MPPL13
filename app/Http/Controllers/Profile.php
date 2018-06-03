@@ -12,7 +12,7 @@ class Profile extends Controller
   //Profile Edit
   public function editProfile(){
     $data = User::select("username","email","bio","img","lati","longi","name")->where("id",\Session::get("id"))->first();
-
+    $data['page'] = "general";
     return view("profile.edit_profile",$data);
   }
 
@@ -92,7 +92,7 @@ class Profile extends Controller
 
     $pass = md5($new);
 
-    $find = User::select("password")->where("id",\Session::get("id"))->first();
+    $find = User::find(\Session::get("id"));
 
     if($find->password != md5($old)){
       return \Redirect::back()->with(["wrong" => trans("profile/change_pass.wrong") ]);
@@ -108,6 +108,25 @@ class Profile extends Controller
     catch(\Exception $e){
       return \Redirect::back()->with(["err" => $e->getMessage() ]);
     }
+  }
+
+  public function showProfile(Request $r){
+    if($r->uname){ //another profile
+      $id = $r->uname;
+    }
+    else{ //own profile
+      $id = \Session::get("id");
+    }
+
+    $find = User::select("id","username","name","registOn","bio","img")->where("id",$id)->orWhere("username",$id)->first();
+
+    if(!$find){ //dead link
+      return 404;
+    }
+
+    $id = $find->id;
+
+    //get open post
 
 
   }

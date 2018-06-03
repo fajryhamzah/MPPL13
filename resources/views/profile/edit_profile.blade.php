@@ -2,7 +2,7 @@
 @section("content")
 @include("layout.menu.afterLogin")
   <section>
-    <div class="container" style="margin-top:2%;">
+    <div style="margin-top:2%;">
       <div class="row">
         {{\Session::get("error")}}
         <div id="modal1" class="modal">
@@ -32,28 +32,28 @@
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s6">
+                    <div class="input-field col s12">
                       <input id="first_name2" type="text" class="validate" name="username" value="{{ old("username",$username) }}">
                       <label class="active" for="first_name2">Username</label>
                     </div>
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s6">
+                    <div class="input-field col s12">
                       <input id="name" type="text" class="validate" name="name" value="{{ old("name",$name) }}">
                       <label class="active" for="name">@lang("profile/edit_profile.name")</label>
                     </div>
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s6">
+                    <div class="input-field col s12">
                       <input id="email" type="email" class="validate" name="email" value="{{ old("email",$email) }}">
                       <label class="active" for="email">E-mail</label>
                     </div>
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s6">
+                    <div class="input-field col s12">
                       <textarea id="bio" name="bio" class="materialize-textarea" data-length="60">{{ old("bio",$bio) }}</textarea>
                       <label class="active" for="bio">Bio</label>
                     </div>

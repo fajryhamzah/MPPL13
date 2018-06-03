@@ -2,18 +2,18 @@
 @section("content")
 @include("layout.menu.afterLogin")
   <section>
-    <div class="container" style="margin-top:2%;">
+    <div style="margin-top:2%;">
       <div class="row">
         <div class="col s12">
             @include("profile.side")
 
             <div class="col s7 content">
               <form name="editProf" method="post">
-
+                  {{ \Session::get("success")}}
                   <div class ="row">
                     <div class="input-field col s7">
                       @if((\Session::has("wrong")) || (\Session::has("error")) )
-                        <input id="first_name2" type="password" class="validate invalid" name="oldpass" value="{{ old("oldpass") }}">
+                        <input id="first_name2" type="password" class="validate invalid" name="oldpass">
                         <span class="helper-text" style="color:rgb(244, 67, 54)">{{ (\Session::get("wrong"))? \Session::get("wrong") : \Session::get("error")->first("oldpass") }}</span>
                       @else
                           <input id="first_name2" type="password" class="validate invalid" name="oldpass" value="{{ old("oldpass") }}">

@@ -55,3 +55,27 @@ footer{
   padding:1%;
   color:#ffffff;
 }
+
+.setting-nav li{
+}
+
+.setting-nav li a{
+  display:block;
+  padding:15px;
+  padding-left:60px;
+  color:rgb(170, 170, 170);
+}
+
+.setting-nav li:hover{
+  background:rgb(245, 245, 245);
+}
+
+.setting-nav .active{
+  border-left: 3px solid rgb(7, 186, 224);
+  background:rgb(245, 245, 245);
+
+}
+
+.setting-nav .active a{
+  color:rgb(7, 186, 224);
+}

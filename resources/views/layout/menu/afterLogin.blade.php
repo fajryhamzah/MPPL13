@@ -1,7 +1,8 @@
 <header>
   <!-- Dropdown Structure -->
   <ul id="dropdown1" class="dropdown-content">
-    <li><a href="{{ url("setting/profile") }}">Profile</a></li>
+    <li><a href="{{ url("profile") }}">Profile</a></li>
+    <li><a href="{{ url("setting/profile") }}">Setting</a></li>
     <li class="divider"></li>
     <li><a href="{{ url("logout") }}">Logout</a></li>
   </ul>
