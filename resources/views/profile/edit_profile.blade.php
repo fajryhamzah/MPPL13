@@ -12,12 +12,12 @@
             <a href="#!" id="cropit" class="modal-close waves-effect waves-green btn" style="margin:0 auto;width:10%;display:block">@lang("profile/edit_profile.crop_button")</a>
           </div>
         </div>
-        <div class="col s12">
+        <div class="col s12" style="margin-top:5%">
             @include("profile.side")
-            <div class="col s7 content">
+            <div class="col s7 offset-s2 content">
               <form name="editProf" method="post" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col s4 offset-s6" style="text-align:center">
+                    <div class="col s4 offset-s2" style="text-align:center">
                       <img src="{{ ($img)? asset("img/avatar/".$img) : asset("images/default.png") }}" class="circle responsive-img" id="img-check">
                       <div class="file-field input-field">
                          <div>
@@ -32,34 +32,34 @@
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s12">
+                    <div class="input-field col s8">
                       <input id="first_name2" type="text" class="validate" name="username" value="{{ old("username",$username) }}">
                       <label class="active" for="first_name2">Username</label>
                     </div>
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s12">
+                    <div class="input-field col s8">
                       <input id="name" type="text" class="validate" name="name" value="{{ old("name",$name) }}">
                       <label class="active" for="name">@lang("profile/edit_profile.name")</label>
                     </div>
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s12">
+                    <div class="input-field col s8">
                       <input id="email" type="email" class="validate" name="email" value="{{ old("email",$email) }}">
                       <label class="active" for="email">E-mail</label>
                     </div>
                   </div>
 
                   <div class ="row">
-                    <div class="input-field col s12">
+                    <div class="input-field col s8">
                       <textarea id="bio" name="bio" class="materialize-textarea" data-length="60">{{ old("bio",$bio) }}</textarea>
                       <label class="active" for="bio">Bio</label>
                     </div>
                   </div>
 
-                  <div class="row" style="width:100%; height:100%;">
+                  <div class="row" style="width:70%; height:100%;">
                     <div class="input-field col s12">
                       <h6>@lang("profile/edit_profile.location") :</h6>
                       <input id="pac-input" class="controls" type="text" placeholder="Search Box">
