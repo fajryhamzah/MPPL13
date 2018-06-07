@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Model\User;
 use App\Model\AdoptThread;
 use App\Model\PetCategory;
+use App\Model\Adopting;
 
 class Profile extends Controller
 {
@@ -131,21 +132,29 @@ class Profile extends Controller
     $data["profile"] = $find;
 
 
-    $data["post"] = $this->getPostProfile($id,true);
-    $data["adopted"] = $this->getAdoptedProfile($id,true);
+    $data["post"] = $this->getPostProfile($id,1,true);
+    $data["adopted"] = $this->getAdoptedProfile($id,1,true);
     //$data["adopting"] = $this->getAdoptedProfile($id,true);
 
 
     return view("profile.profile",$data);
   }
 
-  public function getPostProfile($id,$bypass = false){
+  public function getPostProfile($id,$page,$bypass = false){
     $category = PetCategory::whereNull("parent_id")->get();
+
+    //set current page
+    \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($page) {
+        return $page;
+    });
+
     $data = AdoptThread::select("open_adoption.id","title","gender","age","post_date","category_pet.id","parent_id","name")
                           ->join("category_pet","category_pet","category_pet.id")
                           ->where("status",1)->where("poster_id",$id)->orderBy("open_adoption.id","DESC")->paginate(5);
 
     $data = $data->map(function($item) use($category){
+      $item->post_date = date("d/m/Y",strtotime($item->post_date));
+
       $item = collect($item);
       //dd($item);
       if($item->get("parent_id")){ //if not parent
@@ -154,12 +163,15 @@ class Profile extends Controller
       return $item;
     });
 
+    //for request by api
+    if(!$bypass) return $data->toJson();
+
     return $data;
   }
 
   public function getAdoptedProfile($id,$bypass = false){
     $category = PetCategory::whereNull("parent_id")->get();
-    $data = AdoptThread::select("open_adoption.id","title","gender","age","post_date","category_pet.id","parent_id","name")
+    $data = AdoptThread::select("open_adoption.id as id","title","gender","age","post_date","category_pet.id","parent_id","name")
                           ->join("category_pet","category_pet","category_pet.id")
                           ->where("status",0)->where("poster_id",$id)->orderBy("open_adoption.id","DESC")->paginate(5);
 

@@ -55,13 +55,6 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
 
 
-  //get all type of Pet
-  Route::get("api/pet/{parent}","Dashboard@childTypePet");
-
-  //list of pet in current bound
-  Route::post("api/pet/location","Dashboard@getAllLocation");
-
-
   //profile
   Route::get("profile","Profile@showProfile");
   Route::get("profile/{uname}","Profile@showProfile");

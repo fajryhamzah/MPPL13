@@ -13,11 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
+  //get all type of Pet
+  Route::get("pet/{parent}","Dashboard@childTypePet");
 
-Route::get('/test', function (Request $request) {
-    dd($request);
-});
+  //list of pet in current bound
+  Route::post("pet/location","Dashboard@getAllLocation");
+
+  //get list of post
+  Route::get("post/list/{id}/{page}","Profile@getPostProfile");
