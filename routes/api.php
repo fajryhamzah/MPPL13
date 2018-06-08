@@ -21,4 +21,4 @@ use Illuminate\Http\Request;
   Route::post("pet/location","Dashboard@getAllLocation");
 
   //get list of post
-  Route::get("post/list/{id}/{page}","Profile@getPostProfile");
+  Route::get("post/list/{id}/{page}/{slug}","Profile@getPostProfile");

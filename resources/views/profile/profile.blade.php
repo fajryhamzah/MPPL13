@@ -44,10 +44,12 @@
                       <span>{{$a->get("name")}} {{ ($a->has("parent_category"))? "(".$a->get("parent_category").")":"" }}</span>
                     </div>
                   @endforeach
-                    <div class="col s5 seemore">
-                      <a href="{{url("api/profile/adopted/2")}}" class="btn seemore_adopted">See more</a>
+                    <div class="col s5 seemore adp">
+                      <span style='display:none'>wait</span>
+                      <a href="#" class="btn seemore_adopted">See more</a>
                     </div>
                 </div>
+
                 <div id="adopting" class="col s12"></div>
               </div>
 
@@ -62,7 +64,7 @@
 
 @section("jquery")
   $('.tabs').tabs();
-  page = 2;
+  page = page1 = 2;
   id={{$id}};
 
   $(".seemore_post").on("click",function(e){
@@ -71,7 +73,7 @@
     $(".pst span").show();
     $(this).hide();
     $.ajax({
-      url: "{{ url("api/post/list/".$id) }}/"+page,
+      url: "{{ url("api/post/list/".$id) }}/"+page+"/0/",
       success: function(result){
         page += 1;
         result = JSON.parse(result);
@@ -81,23 +83,47 @@
           $(".pst span").html("no more");
         }
         else{
-
           result.forEach(function(a){
             $(addPost(a)).insertBefore(".pst");
           });
-
-
 
           $(".pst span").hide();
           $(".seemore_post").show();
         }
 
       }
-
     });
+
   });
 
-  $(".seemore_adopted").on("click",function(){
+  $(".seemore_adopted").on("click",function(e){
+    e.preventDefault();
+
+    $(".adp span").show();
+    $(this).hide();
+    $.ajax({
+      url: "{{ url("api/post/list/".$id) }}/"+page+"/1/",
+      success: function(result){
+        page1 += 1;
+        result = JSON.parse(result);
+
+        //if empty
+        if(result.length == 0){
+          $(".adp span").html("no more");
+        }
+        else{
+          result.forEach(function(a){
+            $(addPost(a)).insertBefore(".adp");
+          });
+
+          $(".adp span").hide();
+          $(".seemore_adopted").show();
+        }
+      }
+
+    });
+
+
 
   });
 
