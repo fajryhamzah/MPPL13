@@ -7,7 +7,8 @@
         <div class="col s12">
             @include("profile.side")
 
-            <div class="col s7 offset-s2 content">
+            <div class="col s7 content">
+              <div class="col s12 offset-s2">
               <form name="editProf" method="post">
                   {{ \Session::get("success")}}
                   <div class ="row">
@@ -53,6 +54,7 @@
                     </div>
                   </div>
               </form>
+            </div>
             </div>
 
           </div>
