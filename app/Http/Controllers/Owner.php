@@ -274,7 +274,7 @@ class Owner extends Controller
           })
           ->addColumn("action",function($row){
             $ret = "<a class='action_button edit-link' href='".url("open_adopt/edit/".$row->id)."'>".trans("open_post/post.button_edit")."</a>";
-            $ret .= "<a class='action_button delete-link' href='".url("open_adopt/delete/".$row->id)."'>".trans("open_post/post.button_delete")."</a>";
+            $ret .= "<a class='action_button delete-link' href='#!' data-link='".url("open_adopt/delete/".$row->id)."'>".trans("open_post/post.button_delete")."</a>";
             return $ret;
           })
           ->editColumn("id",function($row){
