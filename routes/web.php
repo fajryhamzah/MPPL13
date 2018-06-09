@@ -47,6 +47,7 @@ Route::group(['middleware' => 'hasLogin'], function () {
   Route::get("/dashboard","Dashboard@index");
   //Owner of pet block
   Route::get('open',"Owner@list");
+  Route::post('open',"Owner@massDelete");
   Route::get('open_adopt',"Owner@newView");
   Route::post('open_adopt',"Owner@new");
   Route::get('open_adopt/delete/{id}',"Owner@singleDelete");

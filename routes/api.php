@@ -22,3 +22,6 @@ use Illuminate\Http\Request;
 
   //get list of post
   Route::get("post/list/{id}/{page}/{slug}","Profile@getPostProfile");
+
+  //datatables of list of post
+  Route::get("post/list/{id}/{status}","Owner@getPostAdoptionThread");
