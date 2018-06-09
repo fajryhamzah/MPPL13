@@ -56,7 +56,8 @@ footer{
   color:#ffffff;
 }
 
-.setting-nav li{
+.content{
+  border-left: 1px solid rgb(219, 219, 219);
 }
 
 .setting-nav li a{
@@ -78,4 +79,33 @@ footer{
 
 .setting-nav .active a{
   color:rgb(7, 186, 224);
+}
+
+.head-link a{
+  margin:5%;
+  display: inline-block;
+}
+
+.head-link i{
+  vertical-align: middle;
+}
+
+
+.action_button{
+  display:inline-block;
+  padding:3px 15px 3px 15px;
+  margin:5px;
+  color:white;
+}
+
+.edit-link{
+  background: rgb(31, 182, 228);
+}
+
+.delete-link{
+  background: rgb(225, 0, 26);
+}
+
+thead tr th:first-child, tbody tr td:first-child{
+  text-align: center;
 }

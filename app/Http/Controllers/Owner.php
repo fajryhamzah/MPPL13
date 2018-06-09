@@ -1,19 +1,19 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\AdoptThread;
 use App\Model\PetCategory;
 use App\Model\Gallery;
+use Yajra\Datatables\Datatables;
 
 class Owner extends Controller
 {
 
   //Owner own thread
   public function list(){
-    $data["own"] = $this->getPostAdoptionThread(\Session::get("id"));
+    $data['id'] = \Session::get("id");
     return view("open_adopt.mypost",$data);
   }
 
@@ -253,10 +253,40 @@ class Owner extends Controller
   }
 
   //Get own adoption post ordered by status and date
-  public function getPostAdoptionThread($id){
-    $data = AdoptThread::select("open_adoption.id","title","post_date","description","status","category_pet.name as pet")->join("category_pet","category_pet","category_pet.id")->where("poster_id",$id)->orderBy("status","desc")->orderBy("post_date","desc")->orderBy("id","desc")->get();
+  public function getPostAdoptionThread($id,$status){
+    $data = AdoptThread::select("open_adoption.id as id",\DB::raw("COUNT(adopting.id) as interest"),"title",\DB::raw("DATE_FORMAT(post_date,'%d.%c.%Y') as date"),"age","gender","category_pet.name as pet")
+            ->join("category_pet","category_pet","category_pet.id")
+            ->leftJoin("adopting","adopting.post_id","open_adoption.id")
+            ->where("poster_id",$id)
+            ->where("open_adoption.status",$status)
+            ->groupBy("open_adoption.id")
+            ->orderBy("post_date","desc")
+            ->orderBy("id","desc")
+            ->get();
 
-    return $data;
+    return Datatables::of($data)
+          ->addColumn("name",function($row){
+            $gender = ($row->gender == 0)? trans("open_post/post.male"):trans("open_post/post.female");
+            $age = $row->age." ".trans("open_post/post.age_unit");
+            $ret = "<span style='display:block'>".$row->title."</span>";
+            $ret .= "<span>".$age." | ".$gender." | ".$row->pet."</span>";
+            return $ret;
+          })
+          ->addColumn("action",function($row){
+            $ret = "<a class='action_button edit-link' href='".url("open_adopt/edit/".$row->id)."'>".trans("open_post/post.button_edit")."</a>";
+            $ret .= "<a class='action_button delete-link' href='".url("open_adopt/delete/".$row->id)."'>".trans("open_post/post.button_delete")."</a>";
+            return $ret;
+          })
+          ->editColumn("id",function($row){
+            $ret = '<label><input type="checkbox" name="ids[]" class="delete_ids" value="'.$row->id.'" /><span></span></label>';
+            return $ret;
+          })
+          ->removeColumn("age")
+          ->removeColumn("gender")
+          ->removeColumn("pet")
+          ->removeColumn("title")
+          ->rawColumns(["name","action","id"])
+          ->make(true);
   }
 
   //delete a single post_date
@@ -274,8 +304,24 @@ class Owner extends Controller
       catch(\Exception $e){
         return \Redirect::to(url("open"))->with(["error" => $e->getMessage()]);
     }
+  }
 
+  //delete mass post
+  public function massDelete(Request $r){
+    $ids = $r->input("ids");
 
+    if(empty($ids)){
+      return \Redirect::back()->with(["error" => "empty"]);
+    }
+
+    try{
+      AdoptThread::where("status",1)->whereIn("id",$ids)->delete();
+
+      return \Redirect::back()->with(["success" => "deleted"]);
+    }
+    catch(\Exception $e){
+      return \Redirect::back()->with(["error" => $e->getMessage()]);
+    }
   }
 
 

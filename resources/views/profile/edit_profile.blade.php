@@ -12,72 +12,75 @@
             <a href="#!" id="cropit" class="modal-close waves-effect waves-green btn" style="margin:0 auto;width:10%;display:block">@lang("profile/edit_profile.crop_button")</a>
           </div>
         </div>
-        <div class="col s12">
+        <div class="col s12" >
             @include("profile.side")
             <div class="col s7 content">
-              <form name="editProf" method="post" enctype="multipart/form-data">
-                  <div class="row">
-                    <div class="col s4 offset-s6" style="text-align:center">
-                      <img src="{{ ($img)? asset("img/avatar/".$img) : asset("images/default.png") }}" class="circle responsive-img" id="img-check">
-                      <div class="file-field input-field">
-                         <div>
-                           <span>@lang("profile/edit_profile.change_image_button")</span>
-                           <input type="file" id="upload" name="profic">
+              <div class="col s12 offset-s2">
+                <form name="editProf" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                      <div class="col s4 offset-s2" style="text-align:center">
+                        <img src="{{ ($img)? asset("img/avatar/".$img) : asset("images/default.png") }}" class="circle responsive-img" id="img-check">
+                        <div class="file-field input-field">
+                           <div>
+                             <span>@lang("profile/edit_profile.change_image_button")</span>
+                             <input type="file" id="upload" name="profic">
+                           </div>
+                           <div class="file-path-wrapper" style="display:none">
+                            <input class="file-path validate" type="text">
+                          </div>
                          </div>
-                         <div class="file-path-wrapper" style="display:none">
-                          <input class="file-path validate" type="text">
-                        </div>
-                       </div>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class ="row">
-                    <div class="input-field col s12">
-                      <input id="first_name2" type="text" class="validate" name="username" value="{{ old("username",$username) }}">
-                      <label class="active" for="first_name2">Username</label>
+                    <div class ="row">
+                      <div class="input-field col s8">
+                        <input id="first_name2" type="text" class="validate" name="username" value="{{ old("username",$username) }}">
+                        <label class="active" for="first_name2">Username</label>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class ="row">
-                    <div class="input-field col s12">
-                      <input id="name" type="text" class="validate" name="name" value="{{ old("name",$name) }}">
-                      <label class="active" for="name">@lang("profile/edit_profile.name")</label>
+                    <div class ="row">
+                      <div class="input-field col s8">
+                        <input id="name" type="text" class="validate" name="name" value="{{ old("name",$name) }}">
+                        <label class="active" for="name">@lang("profile/edit_profile.name")</label>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class ="row">
-                    <div class="input-field col s12">
-                      <input id="email" type="email" class="validate" name="email" value="{{ old("email",$email) }}">
-                      <label class="active" for="email">E-mail</label>
+                    <div class ="row">
+                      <div class="input-field col s8">
+                        <input id="email" type="email" class="validate" name="email" value="{{ old("email",$email) }}">
+                        <label class="active" for="email">E-mail</label>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class ="row">
-                    <div class="input-field col s12">
-                      <textarea id="bio" name="bio" class="materialize-textarea" data-length="60">{{ old("bio",$bio) }}</textarea>
-                      <label class="active" for="bio">Bio</label>
+                    <div class ="row">
+                      <div class="input-field col s8">
+                        <textarea id="bio" name="bio" class="materialize-textarea" data-length="60">{{ old("bio",$bio) }}</textarea>
+                        <label class="active" for="bio">Bio</label>
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="row" style="width:100%; height:100%;">
-                    <div class="input-field col s12">
-                      <h6>@lang("profile/edit_profile.location") :</h6>
-                      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-                      <div id="map"></div>
+                    <div class="row" style="width:70%; height:100%;">
+                      <div class="input-field col s12">
+                        <h6>@lang("profile/edit_profile.location") :</h6>
+                        <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+                        <div id="map"></div>
+                      </div>
                     </div>
-                  </div>
 
-                  <input type="hidden" name="lat" id="lat" />
-                   {{ csrf_field() }}
-                  <input type="hidden" name="lng" id="lng"/>
-                  <input type="hidden" name="img_hidden" id="img_hidden"/>
+                    <input type="hidden" name="lat" id="lat" />
+                     {{ csrf_field() }}
+                    <input type="hidden" name="lng" id="lng"/>
+                    <input type="hidden" name="img_hidden" id="img_hidden"/>
 
-                  <div class="row">
-                    <div class="input-field col s6">
-                      <button type="submit" class="btn btn-primary">@lang("profile/edit_profile.submit")</button>
+                    <div class="row">
+                      <div class="input-field col s6">
+                        <button type="submit" class="btn btn-primary">@lang("profile/edit_profile.submit")</button>
+                      </div>
                     </div>
-                  </div>
-              </form>
+                </form>
+              </div>
+
             </div>
           </div>
         </div>

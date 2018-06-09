@@ -5,6 +5,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\User;
+use App\Model\AdoptThread;
+use App\Model\PetCategory;
+use App\Model\Adopting;
 
 class Profile extends Controller
 {
@@ -118,17 +121,59 @@ class Profile extends Controller
       $id = \Session::get("id");
     }
 
-    $find = User::select("id","username","name","registOn","bio","img")->where("id",$id)->orWhere("username",$id)->first();
+    $find = User::select("id","username","name","registOn","bio","img")->where("id",$id)->orWhere("username",$id)->where("active",1)->first();
 
     if(!$find){ //dead link
       return 404;
     }
 
     $id = $find->id;
+    $data["id"] = $id;
+    $data["profile"] = $find;
 
-    //get open post
+
+    $data["post"] = $this->getPostProfile($id,1,0,true);
+    $data["adopted"] = $this->getPostProfile($id,1,1,true);
+    //$data["adopting"] = $this->getAdoptedProfile($id,true);
 
 
+    return view("profile.profile",$data);
+  }
+
+  public function getPostProfile($id,$page,$slug,$bypass = false){
+    $category = PetCategory::whereNull("parent_id")->get();
+
+    //set current page
+    \Illuminate\Pagination\Paginator::currentPageResolver(function () use ($page) {
+        return $page;
+    });
+
+    $data = AdoptThread::select("open_adoption.id as id","title","gender","age","post_date","category_pet.id","parent_id","name")
+                          ->join("category_pet","category_pet","category_pet.id");
+    if($slug == 0){ //regular post
+      $data = $data->where("status",1);
+    }
+    else{//adopted post
+      $data = $data->where("status",0);
+    }
+
+    $data = $data->where("poster_id",$id)->orderBy("open_adoption.id","DESC")->paginate(5);
+
+    $data = $data->map(function($item) use($category){
+      $item->post_date = date("d/m/Y",strtotime($item->post_date));
+
+      $item = collect($item);
+      //dd($item);
+      if($item->get("parent_id")){ //if not parent
+        $item->put("parent_category",$category->where("id",$item->get("parent_id"))->first()->name); //push category parent name
+      }
+      return $item;
+    });
+
+    //for request by api
+    if(!$bypass) return $data->toJson();
+
+    return $data;
   }
 
 }

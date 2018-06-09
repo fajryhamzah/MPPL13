@@ -47,19 +47,13 @@ Route::group(['middleware' => 'hasLogin'], function () {
   Route::get("/dashboard","Dashboard@index");
   //Owner of pet block
   Route::get('open',"Owner@list");
+  Route::post('open',"Owner@massDelete");
   Route::get('open_adopt',"Owner@newView");
   Route::post('open_adopt',"Owner@new");
   Route::get('open_adopt/delete/{id}',"Owner@singleDelete");
   Route::get('open_adopt/edit/{id}',"Owner@editView");
   Route::post('open_adopt/edit/{id}',"Owner@edit");
 
-
-
-  //get all type of Pet
-  Route::get("api/pet/{parent}","Dashboard@childTypePet");
-
-  //list of pet in current bound
-  Route::post("api/pet/location","Dashboard@getAllLocation");
 
 
   //profile
