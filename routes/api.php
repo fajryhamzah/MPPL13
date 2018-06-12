@@ -25,3 +25,6 @@ use Illuminate\Http\Request;
 
   //datatables of list of post
   Route::get("post/list/{id}/{status}","Owner@getPostAdoptionThread");
+
+  //get info of post
+  Route::post("post/detail/","Owner@getPreviewPost");

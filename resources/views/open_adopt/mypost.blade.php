@@ -19,7 +19,6 @@
       @include("open_adopt.side")
       <div class="col s7 content">
         <div class="col s12 offset-s2">
-
           <div id="una">
             <div class="col s12">
               <div class="col s6">

@@ -139,6 +139,8 @@ class Owner extends Controller
           'category' => 'required',
           'lat' => 'required',
           'lng' => 'required',
+          'gender' => 'required|min:0|max:1',
+          'age' => 'required|min:0|max:360',
           'image' => 'nullable',
           'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
       );
@@ -155,6 +157,8 @@ class Owner extends Controller
       $cate = $r->input("category");
       $lat = $r->input("lat");
       $lng = $r->input("lng");
+      $age = $r->input("age");
+      $gender = $r->input("gender");
       $mode = ($r->input("featuredMode"))? $r->input("featuredMode"): 0;
       $files = $r->file("image");
       @$img_bef = json_decode($r->input("img_before"),true);
@@ -173,6 +177,8 @@ class Owner extends Controller
       $insert->category_pet = $cate;
       if($r->has("type")) $insert->category_pet = $r->input("type");
       $insert->lati = $lat;
+      $insert->age = $age;
+      $insert->gender = $gender;
       $insert->longi = $lng;
       $insert->status = 1;
 
@@ -331,6 +337,26 @@ class Owner extends Controller
     if(!$data) return false;
 
     return $data;
+  }
+
+  //get preview of post
+  public function getPreviewPost(Request $r){
+    $json = json_decode($r->data);
+
+    if($json){
+      $data = AdoptThread::select("open_adoption.id as id","title",\DB::raw("DATE_FORMAT(post_date,'%d.%c.%Y') as date"),"age","gender","category_pet.name as pet")
+              ->join("category_pet","category_pet","category_pet.id")
+              ->whereIn("open_adoption.id",$json)
+              ->where("open_adoption.status",1)
+              ->orderBy("id","desc")
+              ->get()->toJson();
+      return $data;              
+    }
+    else{
+      return null;
+    }
+
+
   }
 
 

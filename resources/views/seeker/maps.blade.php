@@ -1,7 +1,9 @@
 @extends("layout.index_dashboard")
 @section("content")
 @include("layout.menu.afterLogin")
+<div id="result">
 
+</div>
 <div id="map"></div>
 
 
@@ -102,7 +104,8 @@
         center: {lat: {{ $lati or  "-6.914744" }}, lng: {{$longi or  "107.609810" }} },
         disableDefaultUI: true, // a way to quickly hide all controls
         zoom: 20,
-        gestureHandling: 'greedy'
+        gestureHandling: 'greedy',
+        clickableIcons: false,
       });
 
       getMapBound();
@@ -140,7 +143,7 @@
                datatype: 'JSON',
                contentType: 'application/json',
                success: function (response,stat,xhr) {
-                  resp = JSON.parse(response.data);
+                  var resp = JSON.parse(response.data);
 
                   if(xhr.status == 200){
                     var marker;
@@ -150,10 +153,14 @@
                       if(ids.indexOf(resp[i]["id"]) <= -1){
                         marker = new google.maps.Marker({
                           position: new google.maps.LatLng(resp[i]["lati"], resp[i]["longi"]),
-                          title: resp[i]["title"]
+                          title: resp[i]["title"],
+                          url: "{{ url('post/') }}/"+resp[i]['id'],
+                          id: resp[i]["id"]
                         });
 
-
+                        marker.addListener('click',function(){
+                          window.open(this.url,"_blank");
+                        });
 
                         markers.push(marker);
                         ids.push(resp[i]["id"]);
@@ -161,7 +168,34 @@
 
                     }
                     var markerCluster = new MarkerClusterer(map, markers,
-        {imagePath: '{{ asset("images/m/m")}}'});
+                        {
+                          imagePath: '{{ asset("images/m/m")}}',
+                          zoomOnClick: false,
+                      });
+
+                        google.maps.event.addListener(markerCluster, "clusterclick", function (e) {
+                            listIDS = e.getMarkers().map(function(a){
+                              return a.id;
+                            });
+                            var jsn = JSON.stringify(listIDS);
+
+                            $.ajax({
+                              type: "POST",
+                              url: "{{ url('api/post/detail') }}",
+                              data: {data: jsn},
+                              cache: false,
+                              success:function(response){
+                                if(response){
+                                  resp = JSON.parse(response);
+
+                                  resp.forEach(function(e){
+                                    $("#result").append("<span>"+e.title+"</span>");
+                                  });
+                                }
+                              }
+                            });
+
+                        });
                   }
 
                },

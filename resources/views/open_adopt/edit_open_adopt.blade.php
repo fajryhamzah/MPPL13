@@ -117,7 +117,7 @@
                   <span style="color:#d32f2f;display:block">@lang("open_post/open.error_cate")</span>
                 @endif
               @endif
-              <select name="type" id="ty" disabled>
+              <select name="type" id="ty">
                 <option value="" disabled selected>@lang("open_post/open.choose")</option>
                 @foreach($child as $a)
                     <option name="type" value="{{$a->id}}" {{ ($data->category_pet == $a->id) ? "selected":"" }}>{{$a->name}}</option>

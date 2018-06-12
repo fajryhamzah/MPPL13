@@ -21,6 +21,10 @@ class Seeker extends Controller
     return view("seeker.maps",$data);
   }
 
+  public function detail($id){
+    echo $id;
+  }
+
   public function finder(){
     $data['category'] = PetCategory::where("parent_id",null)->get();
     $location = User::select("lati","longi")->where("id",\Session::get('id'))->first();

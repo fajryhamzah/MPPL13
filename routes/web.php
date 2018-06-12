@@ -73,6 +73,10 @@ Route::group(['middleware' => 'hasLogin'], function () {
   Route::post("advance_finder","Seeker@finderAction");
 
 
+  //POST
+  Route::get("post/{id}","Seeker@detail");
+
+
   Route::get('logout','Dashboard@logout');
 
 });
