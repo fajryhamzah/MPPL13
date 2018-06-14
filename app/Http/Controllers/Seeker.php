@@ -8,6 +8,7 @@ use App\Model\AdoptThread;
 use App\Model\PetCategory;
 use App\Model\Gallery;
 use App\Model\User;
+use App\Model\Adopting;
 
 class Seeker extends Controller
 {
@@ -16,13 +17,34 @@ class Seeker extends Controller
     $location = User::select("lati","longi")->where("id",\Session::get('id'))->first();
     $data['lati'] = $location->lati;
     $data['longi'] = $location->longi;
+    $data['id'] = \Session::get("id");
 
 
     return view("seeker.maps",$data);
   }
 
   public function detail($id){
-    echo $id;
+    $post = AdoptThread::where('id',$id)->first();
+
+    if(!$post){
+      return 404;
+    }
+
+    $data["detail"] = $post;
+    $data["id"] = $id;
+    $bidder = Adopting::where("post_id",$id)->get();
+
+    //check if the post is belong to the session holder
+    if($post->poster_id == \Session::get("id")){
+      $data["bidder_count"] = $bidder->count();
+    }
+    else{
+      if($bidder->where("bidder_id",\Session::get("id"))->count()){ //already bid
+        $data["bidder_post"] = $bidder->where("bidder_id",\Session::get("id"))->first();
+      }
+    }
+
+    return view("seeker.detail_post",$data);
   }
 
   public function finder(){

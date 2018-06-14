@@ -155,6 +155,7 @@ class Dashboard extends Controller
     $west = $r->input("west");
     $north = $r->input("north");
     $east = $r->input("east");
+    $id = $r->input("id");
 
     if( (!$south) || (!$west) || (!$north) || (!$east) ){
       return \Response::json([
@@ -162,7 +163,9 @@ class Dashboard extends Controller
       ], 400);
     }
 
-    $data = AdoptThread::select(\DB::raw("open_adoption.id,title,lati,longi,IF(parent_id is null, category_pet.id,parent_id) as cate"))->join("category_pet","category_pet.id","open_adoption.category_pet")->where("status",1)->where("poster_id","!=",\Session::get("id"))->where("lati",">",$south)->where("lati","<",$north)->where("longi",">",$west)->where("longi","<",$east)->get()->toJSON();
+    //\DB::enableQueryLog();
+    $data = AdoptThread::select(\DB::raw("open_adoption.id,title,lati,longi,IF(parent_id is null, category_pet.id,parent_id) as cate"))->join("category_pet","category_pet.id","open_adoption.category_pet")->where("status",1)->where("poster_id","!=",$id)->where("lati",">",$south)->where("lati","<",$north)->where("longi",">",$west)->where("longi","<",$east)->get()->toJSON();
+    //dd(\DB::getQueryLog());
     return \Response::json([
         'data' => $data
     ], 200);
