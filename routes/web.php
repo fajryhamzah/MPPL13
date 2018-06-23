@@ -75,6 +75,17 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
   //POST
   Route::get("post/{id}","Seeker@detail");
+  Route::post("post/{id}","Seeker@apply");
+
+
+  Route::get("test",function(){
+    return view("test");
+  });
+
+  Route::get('send', function () {
+    event(new App\Events\NewAdopter());
+    return "Event has been sent!";
+});
 
 
   Route::get('logout','Dashboard@logout');

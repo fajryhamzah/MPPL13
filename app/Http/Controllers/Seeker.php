@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Notification;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Model\AdoptThread;
@@ -45,6 +46,41 @@ class Seeker extends Controller
     }
 
     return view("seeker.detail_post",$data);
+  }
+
+  public function apply($id,Request $r){
+    $rules = array(
+        'msg' => 'required',
+    );
+
+    $validator = \Validator::make($r->all(), $rules);
+
+    if($validator->fails()){
+        return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
+    }
+
+    $id_bid = \Session::get("id");
+    $msg =  $r->input("msg");
+    $cv = Adopting::firstOrNew(["bidder_id" => $id_bid, "post_id"=> $id]);
+    $cv->message = $msg;
+    $exists = $cv->exists;
+
+    try{
+      $cv->save();
+
+      if(!$exists){
+        $owner_id = AdoptThread::select("poster_id")->where("id",$id)->first()->poster_id;
+        $notif = new Notification();
+
+        $notif->addNotification($owner_id,$id);
+      }
+
+      return \Redirect::back()->with(["success" => "success"]);
+    }
+    catch(\Exception $e){
+      return \Redirect::back()->with(["error" => $e->getMessage()]);
+    }
+
   }
 
   public function finder(){
