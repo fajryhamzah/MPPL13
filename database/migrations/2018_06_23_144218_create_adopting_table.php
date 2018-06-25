@@ -12,6 +12,8 @@ class CreateAdoptingTable extends Migration {
 	 */
 	public function up()
 	{
+		if (Schema::hasTable('adopting')) { return; }
+
 		Schema::create('adopting', function(Blueprint $table)
 		{
 			$table->integer('id', true);

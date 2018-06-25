@@ -12,6 +12,7 @@ class CreateCategoryPetTable extends Migration {
 	 */
 	public function up()
 	{
+		if (Schema::hasTable('category_pet')) { return; }
 		Schema::create('category_pet', function(Blueprint $table)
 		{
 			$table->integer('id', true);

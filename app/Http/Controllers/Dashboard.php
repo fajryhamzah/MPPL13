@@ -121,6 +121,7 @@ class Dashboard extends Controller
     \Session::put('id', $data->id);
     \Session::put('username', $data->username);
     \Session::put('img_profile', $data->img);
+    \Session::put('channel', sha1($data->id.env("APP_KEY")));
 
     return json_encode(array('code'=>200,'msg'=> "Ok" ));
   }

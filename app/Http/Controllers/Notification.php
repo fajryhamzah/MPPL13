@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Notification as notif;
+use Illuminate\Support\Facades\Hash;
 
 class Notification
 {
@@ -23,7 +24,14 @@ class Notification
     $insert->date = date("Y-m-d H:i:s");
 
     try{
-      $insert->save();
+      //$insert->save();
+
+      //make data for the notif event
+      $id = sha1($id_target.env("APP_KEY"));
+      $event["type"] = $this->type[$type];
+      $event["id_post"] = $id_post;
+      //broadcast the event
+      event(new \App\Events\NewAdopter($id,$event));
 
       return true;
     }

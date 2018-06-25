@@ -14,14 +14,17 @@ class NewAdopter implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
+    public $target;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($to,$message)
     {
-      $this->message = "testtt";
+
+      $this->target = $to;
+      $this->message = $message;
     }
 
     /**
@@ -31,10 +34,10 @@ class NewAdopter implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel("notif");//['notif'];
+        return ['notif-'.$this->target];//new PrivateChannel("notif");//
     }
 
     public function broadcastAs(){
-      return 'testing';
+      return 'notification';
     }
 }

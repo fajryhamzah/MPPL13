@@ -350,7 +350,7 @@ class Owner extends Controller
               ->where("open_adoption.status",1)
               ->orderBy("id","desc")
               ->get()->toJson();
-      return $data;              
+      return $data;
     }
     else{
       return null;

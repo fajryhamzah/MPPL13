@@ -17,6 +17,26 @@
         <!-- Js -->
         <script src="{{asset("js/vendor/jquery-1.10.2.min.js")}}"></script>
         <script src="{{asset("js/materialize.min.js")}}"></script>
+        <script src="{{ asset("js/pusher.js") }}"></script>
+        <script>
+
+          var pusher = new Pusher('16226bb2107d23c5f075', {
+            cluster: 'ap1',
+          });
+
+          var channel = pusher.subscribe('notif-{{ \Session::get("channel")}}');
+          channel.bind('notification', function(data) {
+            //increment badge
+            var i = parseInt(document.getElementById("notif-no").innerHTML);
+            if(isNaN(i)){
+              i = 0;
+            }
+
+            document.getElementById("notif-no").innerHTML = i+1;
+
+            console.log(data);
+          });
+        </script>
         @yield("top_include")
     </head>
     <body>

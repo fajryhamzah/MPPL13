@@ -14,6 +14,11 @@ use App\Model\Adopting;
 class Seeker extends Controller
 {
 
+  /*
+    * Showing finder page
+    * GET /finder
+    *
+  */
   public function index(){
     $location = User::select("lati","longi")->where("id",\Session::get('id'))->first();
     $data['lati'] = $location->lati;
@@ -24,6 +29,12 @@ class Seeker extends Controller
     return view("seeker.maps",$data);
   }
 
+
+  /*
+    * Showing detail page about adoption thread
+    * GET /post/{id}
+    * id: integer, unique number of adoption thread
+  */
   public function detail($id){
     $post = AdoptThread::where('id',$id)->first();
 
@@ -48,6 +59,11 @@ class Seeker extends Controller
     return view("seeker.detail_post",$data);
   }
 
+  /*
+    * Handling bid request to adoption thread
+    * POST /post/{id}
+    * id: integer, unique number of adoption thread
+  */
   public function apply($id,Request $r){
     $rules = array(
         'msg' => 'required',
@@ -66,7 +82,7 @@ class Seeker extends Controller
     $exists = $cv->exists;
 
     try{
-      $cv->save();
+      //$cv->save();
 
       if(!$exists){
         $owner_id = AdoptThread::select("poster_id")->where("id",$id)->first()->poster_id;

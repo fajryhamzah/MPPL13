@@ -12,6 +12,7 @@ class CreateUserTable extends Migration {
 	 */
 	public function up()
 	{
+		if (Schema::hasTable('user')) { return; }
 		Schema::create('user', function(Blueprint $table)
 		{
 			$table->integer('id', true);

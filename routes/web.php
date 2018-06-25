@@ -75,17 +75,14 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
   //POST
   Route::get("post/{id}","Seeker@detail");
-  Route::post("post/{id}","Seeker@apply");
+  Route::post("post/{id}","Seeker@apply"); //bid
 
 
   Route::get("test",function(){
     return view("test");
   });
 
-  Route::get('send', function () {
-    event(new App\Events\NewAdopter());
-    return "Event has been sent!";
-});
+  Route::get("a","Notification@tes");
 
 
   Route::get('logout','Dashboard@logout');

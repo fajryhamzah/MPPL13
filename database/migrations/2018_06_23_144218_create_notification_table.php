@@ -12,6 +12,7 @@ class CreateNotificationTable extends Migration {
 	 */
 	public function up()
 	{
+		if (Schema::hasTable('notification')) { return; }
 		Schema::create('notification', function(Blueprint $table)
 		{
 			$table->integer('id', true);
