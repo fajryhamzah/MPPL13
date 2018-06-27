@@ -21,6 +21,7 @@ class Seeker extends Controller
   */
   public function index(){
     $location = User::select("lati","longi")->where("id",\Session::get('id'))->first();
+    $data['category'] = PetCategory::where("parent_id",null)->get();
     $data['lati'] = $location->lati;
     $data['longi'] = $location->longi;
     $data['id'] = \Session::get("id");
@@ -85,10 +86,10 @@ class Seeker extends Controller
       //$cv->save();
 
       if(!$exists){
-        $owner_id = AdoptThread::select("poster_id")->where("id",$id)->first()->poster_id;
+        $info = AdoptThread::select("title","poster_id","link_name")->join("gallery","open_adoption.id","open_adoption_id")->where("open_adoption.id",$id)->where("is_featured",1)->first();
         $notif = new Notification();
 
-        $notif->addNotification($owner_id,$id);
+        $notif->addNotification($info->poster_id,$id,0,array("name" => $info->title, "img" => $info->link_name));
       }
 
       return \Redirect::back()->with(["success" => "success"]);

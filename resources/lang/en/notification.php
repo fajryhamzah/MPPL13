@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'new_adopter' => "dsf",
+    'new_adopter' => ":name got new admirer",
 ];

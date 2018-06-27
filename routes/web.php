@@ -77,14 +77,6 @@ Route::group(['middleware' => 'hasLogin'], function () {
   Route::get("post/{id}","Seeker@detail");
   Route::post("post/{id}","Seeker@apply"); //bid
 
-
-  Route::get("test",function(){
-    return view("test");
-  });
-
-  Route::get("a","Notification@tes");
-
-
   Route::get('logout','Dashboard@logout');
 
 });

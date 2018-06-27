@@ -33,7 +33,19 @@
             }
 
             document.getElementById("notif-no").innerHTML = i+1;
+            var msg = data.message;
+            var li = document.createElement("li");
+            var txt;
+            if(msg.type == "new_bidder"){
+                txt = "@lang("notification.new_adopter")".replace(":name",msg.name);
+                li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>"+txt+"</a>";
+            }
+            else{
+                li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>Read More</a>";
+            }
 
+
+            document.getElementById("menu-notif").appendChild(li);
             console.log(data);
           });
         </script>

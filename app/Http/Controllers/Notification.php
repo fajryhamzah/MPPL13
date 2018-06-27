@@ -16,7 +16,7 @@ class Notification
       * @param $type Type of notification.see var $type
       * @return boolean
   */
-  public function addNotification($id_target,$id_post=null,$type=0){
+  public function addNotification($id_target,$id_post=null,$type=0,$opt=array()){
     $insert = new notif;
     $insert->id_target = $id_target;
     $insert->id_post = $id_post;
@@ -30,6 +30,12 @@ class Notification
       $id = sha1($id_target.env("APP_KEY"));
       $event["type"] = $this->type[$type];
       $event["id_post"] = $id_post;
+
+      //merge optional event message
+      if(!empty($opt)){
+        $event = array_merge($event,$opt);
+      }
+
       //broadcast the event
       event(new \App\Events\NewAdopter($id,$event));
 
