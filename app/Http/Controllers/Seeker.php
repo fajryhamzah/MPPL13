@@ -37,14 +37,21 @@ class Seeker extends Controller
     * id: integer, unique number of adoption thread
   */
   public function detail($id){
-    $post = AdoptThread::where('id',$id)->first();
+    $post = AdoptThread::select("open_adoption.id as post_id","title","gender","age","description","post_date","open_adoption.lati","open_adoption.longi","user.id as poster_id",\DB::raw("COALESCE(user.name,username) as name"),"category_pet.name as cate")
+    ->join("user","poster_id","user.id")
+    ->join("category_pet","open_adoption.category_pet","category_pet.id")
+    ->where('open_adoption.id',$id)
+    ->first();
 
     if(!$post){
       return 404;
     }
 
+    $img = Gallery::select("link_name")->where("open_adoption_id",$id)->orderBy("is_featured","DESC")->get();
+
     $data["detail"] = $post;
     $data["id"] = $id;
+    $data["img"] = $img;
     $bidder = Adopting::where("post_id",$id)->get();
 
     //check if the post is belong to the session holder
@@ -83,9 +90,9 @@ class Seeker extends Controller
     $exists = $cv->exists;
 
     try{
-      //$cv->save();
+      $cv->save();
 
-      if(!$exists){
+      if(!$exists){ //new bidder
         $info = AdoptThread::select("title","poster_id","link_name")->join("gallery","open_adoption.id","open_adoption_id")->where("open_adoption.id",$id)->where("is_featured",1)->first();
         $notif = new Notification();
 
@@ -168,6 +175,56 @@ class Seeker extends Controller
     return view("seeker.search_result",$passing);
 
   }
+
+  /*
+    * Get preview of post
+    * POST /api/pet/detail
+    *
+  */
+  public function getPreviewPost(Request $r){
+    $json = json_decode($r->data);
+
+    if($json){
+      $data = AdoptThread::select("open_adoption.id","gender","age","title","category_pet.name as cate","link_name","is_featured",\DB::raw("DATE_FORMAT(post_date,'%d.%c.%Y') as date"))
+      ->join("category_pet","category_pet.id","open_adoption.category_pet")
+      ->leftJoin("gallery","open_adoption_id","open_adoption.id")
+      ->whereIn("open_adoption.id",$json)
+      ->get();
+
+      //dd(\DB::getQueryLog());
+      $test = $data->where("is_featured",1);
+
+      $data->map(function($item) use($test){
+          if($test->where("id",$item->id)->isEmpty()){
+            $test->push($item);
+          }
+          return true;
+      });
+
+      $test = $test->map(function($item){
+        if($item->link_name){
+          $item->link_name = asset("img/product/".$item->link_name);
+        }
+        else{
+          $item->link_name = asset("img/avatar/default.png");
+        }
+        $item->gender = ($item->gender == 0)? trans("seeker/maps.male"):trans("seeker/maps.female");
+        $item->age = trans("seeker/maps.age",["age"=> $item->age]);
+        unset($item->is_featured);
+
+        return $item;
+      });
+
+      $data = $test->values()->toJSON();
+      return $data;
+    }
+    else{
+      return null;
+    }
+
+
+  }
+
 
 
 }

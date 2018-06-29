@@ -2,7 +2,7 @@
 @section("content")
 @include("layout.menu.afterLogin")
 <div class="row" style="height:100%">
-  <div class="col s12" style="height:20%;">
+  <div class="col s12">
     <form name="advance_finder" method="post">
       <div class="col s2">
         <select name="category" id="pet">
@@ -54,7 +54,9 @@
         <div id="map"></div>
     </div>
     <div class="col s3" id="result_parent">
-      <div id="result"></div>
+      <div id="result">
+
+      </div>
     </div>
   </div>
 </div>
@@ -69,8 +71,31 @@
 
 @section("top_include")
 <style>
+
+.preview-name{
+  text-align: left;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.preview-info{
+  text-align: left;
+  font-size:15px;
+}
+
+.time{
+  text-align: left;
+  font-size:10px;
+}
+
+.card-result{
+  border-bottom: 1px solid black;
+}
+
       #result_parent{
         display: none;
+        padding-left: 0;
+        padding-right: 0;
       }
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -127,6 +152,10 @@
       }
       #target {
         width: 345px;
+      }
+
+      #result_parent{
+        text-align: center;
       }
 
 </style>
@@ -241,8 +270,27 @@ $('#pet').change(function(){
          getMapBound();
     });
 
-    function addCard(info){
+    function addCard(id,name,cate,gender,age,time,image){
+        var myvar = '<div class="col s12 card-result">'+
+        '          <div class="row">'+
+        '            <div class="col s3" style="padding-right:0">'+
+        '              <img src="'+image+'" alt="" class="circle responsive-img" style="min-height:80px;">'+
+        '            </div>'+
+        '            <div class="col s9" style="padding-left:0">'+
+        '              <div class="col s12 preview-name">'+
+        '                <a href="{{ url("post")}}/'+id+'">'+name+'</a>'+
+        '              </div>'+
+        '              <div class="col s12 preview-info">'+
+        '                '+cate+' - '+gender+' - '+age+
+        '              </div>'+
+        '              <div class="col s12 time">'+
+        '                '+time+
+        '              </div>'+
+        '            </div>'+
+        '          </div>'+
+        '        </div>';
 
+        return myvar;
     }
 
 
@@ -303,7 +351,7 @@ $('#pet').change(function(){
                             $("#map_parent").removeClass("s12").addClass("s9");
                             $("#result_parent").show();
                             $("#result_parent").addClass("fadeInRight");
-                            $("#result").html("wait...");
+                            //$("#result").html("<img class='wait' src='{{asset("images/loading.gif")}}' />");
 
                             $.ajax({
                               type: "POST",
@@ -315,8 +363,7 @@ $('#pet').change(function(){
                                   resp = JSON.parse(response);
 
                                   resp.forEach(function(e){
-                                    $("#result").append("<span><a href='{{ url('post/') }}/"+e.id+"' target='_BLANK'>"+e.title+"</a></span>");
-
+                                    $("#result").append(addCard(e.id,e.title,e.cate,e.gender,e.age,e.date,e.link_name));
                                   });
                                 }
                               }
