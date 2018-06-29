@@ -11,7 +11,9 @@
 |
 */
 
-Route::get("/","HomePage@index");
+Route::get("/",function(){
+  return view("homepage");
+});
 
 //WHEN USER DONT HAVE CREDENTIAL
 Route::group(['middleware' => 'notHaveLogin'], function () {
@@ -78,5 +80,9 @@ Route::group(['middleware' => 'hasLogin'], function () {
   Route::post("post/{id}","Seeker@apply"); //bid
 
   Route::get('logout','Dashboard@logout');
+
+
+  //fix it later
+  Route::get("api/notification","Dashboard@notif");
 
 });

@@ -9,5 +9,5 @@ return[
   "female" => "Female",
   "age" => "Age",
   "age_unit" => "Month",
-  "post_date" => "Post Date",
+  "joined" => "Joined :date"
 ];

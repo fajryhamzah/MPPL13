@@ -2,7 +2,7 @@
 @section("content")
 @include("layout.menu.afterLogin")
 <div class="row" style="height:100%">
-  <div class="col s12">
+  <div class="col s12 advance_search">
     <form name="advance_finder" method="post">
       <div class="col s2">
         <select name="category" id="pet">
@@ -49,7 +49,7 @@
       <input type="hidden" name="distMax" id="dmax" value="10" />
     </form>
   </div>
-  <div class="col s12" style="height:100%;padding:0px">
+  <div class="col s12" style="height:100%;padding:0px:background-color:#FFFFFF">
     <div class="col s12" style="height:100%;padding:0px" id="map_parent">
         <div id="map"></div>
     </div>
@@ -72,6 +72,10 @@
 @section("top_include")
 <style>
 
+.advance_search{
+  padding: 1% !important;
+}
+
 .preview-name{
   text-align: left;
   font-weight: bold;
@@ -89,8 +93,10 @@
 }
 
 .card-result{
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #C7CDCD;
+  padding: 5% !important;
 }
+
 
       #result_parent{
         display: none;
@@ -272,7 +278,7 @@ $('#pet').change(function(){
 
     function addCard(id,name,cate,gender,age,time,image){
         var myvar = '<div class="col s12 card-result">'+
-        '          <div class="row">'+
+
         '            <div class="col s3" style="padding-right:0">'+
         '              <img src="'+image+'" alt="" class="circle responsive-img" style="min-height:80px;">'+
         '            </div>'+
@@ -287,7 +293,7 @@ $('#pet').change(function(){
         '                '+time+
         '              </div>'+
         '            </div>'+
-        '          </div>'+
+
         '        </div>';
 
         return myvar;
@@ -351,7 +357,7 @@ $('#pet').change(function(){
                             $("#map_parent").removeClass("s12").addClass("s9");
                             $("#result_parent").show();
                             $("#result_parent").addClass("fadeInRight");
-                            //$("#result").html("<img class='wait' src='{{asset("images/loading.gif")}}' />");
+                            $("#result").html("<img class='wait' src='{{asset("images/loading.gif")}}' />");
 
                             $.ajax({
                               type: "POST",
@@ -361,7 +367,7 @@ $('#pet').change(function(){
                               success:function(response){
                                 if(response){
                                   resp = JSON.parse(response);
-
+                                  $("#result").html("");
                                   resp.forEach(function(e){
                                     $("#result").append(addCard(e.id,e.title,e.cate,e.gender,e.age,e.date,e.link_name));
                                   });

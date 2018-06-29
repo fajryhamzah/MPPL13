@@ -21,15 +21,17 @@ class Notification
     $insert->id_target = $id_target;
     $insert->id_post = $id_post;
     $insert->type = $this->type[$type];
-    $insert->date = date("Y-m-d H:i:s");
+    $date = date("Y-m-d H:i:s");
+    $insert->date = $date;
 
     try{
-      //$insert->save();
+      $insert->save();
 
       //make data for the notif event
       $id = sha1($id_target.env("APP_KEY"));
       $event["type"] = $this->type[$type];
       $event["id_post"] = $id_post;
+      $event["date"] = $date;
 
       //merge optional event message
       if(!empty($opt)){

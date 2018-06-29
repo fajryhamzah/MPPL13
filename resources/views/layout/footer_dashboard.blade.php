@@ -9,6 +9,15 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $(".dropdown-trigger").dropdown();
+
+        $.ajax({
+          url: "{{url("api/notification")}}",
+          dataType: "json",
+          success: function(data){
+            console.log(data);
+            notificationAdd(data,true);
+          }
+        });
         @yield("jquery")
     })
 </script>

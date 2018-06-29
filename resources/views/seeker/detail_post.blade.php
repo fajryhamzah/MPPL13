@@ -43,13 +43,29 @@
           @lang("seeker/detail.age_unit",["age" => $detail->age])
         </div>
         <div class="col s6 head">
+          @lang("seeker/detail.poster")
+        </div>
+        <div class="col s6">
+          <a href="{{url("profile/".$detail->poster_id)}}">{{$detail->name}}</a>
+        </div>
+        <div class="col s6 head">
+          @lang("seeker/detail.date")
+        </div>
+        <div class="col s6">
+          {{date("d M Y",strtotime($detail->post_date))}}
+        </div>
+        <div class="col s6 head">
           @lang("seeker/detail.description")
         </div>
         <div class="col s12">
           {!! $detail->description !!}
         </div>
         <div class="col s12">
-          <a id="app" class="waves-effect waves-light btn-small"><i class="material-icons left">create</i> @lang("seeker/detail.apply")</a>
+          @if($detail->status == 0)
+            <h5>@lang("seeker/detail.closed",["link" => "<a href='".url("profile/".$detail->adopter_id)."'>".$detail->adopter."</a>"])</h5>
+          @else
+            <a id="app" class="waves-effect waves-light btn-small"><i class="material-icons left">create</i> @lang("seeker/detail.apply")</a>
+          @endif
           <a id="show" class="waves-effect waves-light btn-small light-blue darken-1"><i class="material-icons left">location_on</i> @lang("seeker/detail.show_loca")</a>
         </div>
     </div>
@@ -59,29 +75,32 @@
           @if(isset($bidder_count))
             You're the owner here the Count: {{ $bidder_count }}
           @else
-          {{ csrf_field() }}
+            {{ csrf_field() }}
 
-          @if(isset($bidder_post))
-            <span>@lang("seeker/detail.already")</span>
-            <div class="row">
-              <div class="input-field col s12">
-                <textarea id="textarea1" class="materialize-textarea" name="msg">{{ $bidder_post->message  }}</textarea>
-                <label class="active" for="textarea1">@lang("seeker/detail.cover")</label>
+            @if(isset($bidder_post))
+              <span>@lang("seeker/detail.already")</span>
+              <div class="row">
+                <div class="input-field col s12">
+                  <textarea id="textarea1" class="materialize-textarea" name="msg">{{ $bidder_post->message  }}</textarea>
+                  <label class="active" for="textarea1">@lang("seeker/detail.cover")</label>
+                </div>
               </div>
-            </div>
-          @else
-            <div class="row">
-              <div class="input-field col s12">
-                <textarea id="textarea1" class="materialize-textarea" name="msg"></textarea>
-                <label for="textarea1">@lang("seeker/detail.cover")</label>
+            @else
+              <div class="row">
+                <div class="input-field col s12">
+                  <textarea id="textarea1" class="materialize-textarea" name="msg"></textarea>
+                  <label for="textarea1">@lang("seeker/detail.cover")</label>
+                </div>
               </div>
-            </div>
-          @endif
+
+
+            @endif
+            <button class="btn waves-effect waves-light" type="submit" name="action">@lang("seeker/detail.submit")
+              <i class="material-icons right">send</i>
+            </button>
         @endif
 
-        <button class="btn waves-effect waves-light" type="submit" name="action">@lang("seeker/detail.submit")
-          <i class="material-icons right">send</i>
-        </button>
+
         </form>
 
 
@@ -148,7 +167,7 @@
     M.toast({html: 'Success',classes: "light-blue darken-1"});
 @endif
 @if(\Session::has("error"))
-    M.toast({html: 'Failed',classes: "red darken-4"});
+    M.toast({html: "{{ \Session::get("error")}}" ,classes: "red darken-4"});
 @endif
 </script>
 @stop

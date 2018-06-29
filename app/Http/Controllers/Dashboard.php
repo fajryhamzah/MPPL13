@@ -9,6 +9,7 @@ use App\Http\Controllers\Email;
 use App\Model\User;
 use App\Model\PetCategory;
 use App\Model\AdoptThread;
+use App\Model\Notification;
 use App\Http\Controllers\Owner;
 use App\Http\Controllers\HomePage;
 
@@ -70,8 +71,6 @@ class Dashboard extends Controller
         $msg = trans("register.exist");
         return \Redirect::to(url("/register"))->with(["error" => $msg]);
       }
-
-
   }
 
   //verification for activation after regist
@@ -185,6 +184,17 @@ class Dashboard extends Controller
     return \Response::json([
         'data' => $data
     ], 200);
+
+  }
+
+  public function notif(){
+    $notif = Notification::select("id_post","type","date","title as name")->join("open_adoption","open_adoption.id","id_post")->where("id_target",\Session::get("id"))->where("seen",0)->get();
+    $count = $notif->count();
+
+    $data["count"] = $count;
+    $data["data"] = $notif;
+
+    return json_encode($data);
 
   }
 

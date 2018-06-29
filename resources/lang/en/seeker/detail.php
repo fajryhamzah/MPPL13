@@ -14,4 +14,8 @@ return [
     'already' => "You're already applying to this post",
     'cover' => "Cover Letter",
     'submit' => "Submit",
+    'poster' => "Posted by",
+    'date' => "Posted",
+    'closed' => "Adopted by :link",
+    'end' => "Post Ended",
   ];

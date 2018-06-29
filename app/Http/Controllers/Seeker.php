@@ -37,7 +37,7 @@ class Seeker extends Controller
     * id: integer, unique number of adoption thread
   */
   public function detail($id){
-    $post = AdoptThread::select("open_adoption.id as post_id","title","gender","age","description","post_date","open_adoption.lati","open_adoption.longi","user.id as poster_id",\DB::raw("COALESCE(user.name,username) as name"),"category_pet.name as cate")
+    $post = AdoptThread::select("open_adoption.id as post_id","title","gender","age","description","post_date","open_adoption.lati","open_adoption.longi","user.id as poster_id",\DB::raw("COALESCE(user.name,username) as name"),"category_pet.name as cate","open_adoption.status")
     ->join("user","poster_id","user.id")
     ->join("category_pet","open_adoption.category_pet","category_pet.id")
     ->where('open_adoption.id',$id)
@@ -45,6 +45,17 @@ class Seeker extends Controller
 
     if(!$post){
       return 404;
+    }
+
+    //get adopter
+    if($post->status == 0){
+      $adopter = Adopting::select("bidder_id",\DB::raw("COALESCE(username,name) as name"))
+                 ->join("user","bidder_id","user.id")
+                 ->where("post_id",$id)
+                 ->where("status",1)
+                 ->first();
+      $post->adopter = $adopter->name;
+      $post->adopter_id = $adopter->bidder_id;
     }
 
     $img = Gallery::select("link_name")->where("open_adoption_id",$id)->orderBy("is_featured","DESC")->get();
@@ -82,6 +93,11 @@ class Seeker extends Controller
     if($validator->fails()){
         return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
     }
+    $thread = AdoptThread::find($id);
+
+    if($thread->status == 0){
+      return \Redirect::back()->with(["error" => trans("seeker/detail.end")]);
+    }
 
     $id_bid = \Session::get("id");
     $msg =  $r->input("msg");
@@ -89,14 +105,26 @@ class Seeker extends Controller
     $cv->message = $msg;
     $exists = $cv->exists;
 
+    if(!$exists){
+      $cv->apply_at = date('Y-m-d h:i:s',time());
+    }
+
     try{
       $cv->save();
 
       if(!$exists){ //new bidder
-        $info = AdoptThread::select("title","poster_id","link_name")->join("gallery","open_adoption.id","open_adoption_id")->where("open_adoption.id",$id)->where("is_featured",1)->first();
+        $info = Gallery::where("open_adoption_id",$id)->where("is_featured",1)->first();
+        if($info){
+          $link_name = asset("img/product/".$info->link_name);
+        }
+        else{
+          $link_name = asset("img/avatar/default.png");
+        }
+
+
         $notif = new Notification();
 
-        $notif->addNotification($info->poster_id,$id,0,array("name" => $info->title, "img" => $info->link_name));
+        $notif->addNotification($thread->poster_id,$id,0,array("name" => $thread->title, "img" => $link_name));
       }
 
       return \Redirect::back()->with(["success" => "success"]);

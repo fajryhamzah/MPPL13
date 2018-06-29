@@ -20,34 +20,62 @@
         <script src="{{ asset("js/pusher.js") }}"></script>
         <script>
 
+        function notificationAdd(data,fromDB = false){
+          var i = parseInt(document.getElementById("notif-no").innerHTML);
+          if(isNaN(i)){
+            i = 0;
+          }
+
+          var msg;
+          var li = document.createElement("li");
+          var txt;
+          if(fromDB){
+            document.getElementById("notif-no").innerHTML = i+data.count;
+
+            data.data.forEach(function(msg){
+              console.log(msg)
+              if(msg.type == "new_bidder"){
+                  txt = "@lang("notification.new_adopter")".replace(":name",msg.name);
+                  li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>"+txt+"</a><span>"+msg.date+"</span>";
+              }
+              else{
+                  li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>Read More</a>";
+              }
+            });
+
+          }
+          else{
+            document.getElementById("notif-no").innerHTML = i+1;
+            msg = data;
+
+            if(msg.type == "new_bidder"){
+                txt = "@lang("notification.new_adopter")".replace(":name",msg.name);
+                li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>"+txt+"</a><span>"+msg.date+"</span>";
+            }
+            else{
+                li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>Read More</a>";
+            }
+
+          }
+
+
+
+
+
+          document.getElementById("menu-notif").appendChild(li);
+        }
+
           var pusher = new Pusher('16226bb2107d23c5f075', {
             cluster: 'ap1',
           });
 
           var channel = pusher.subscribe('notif-{{ \Session::get("channel")}}');
           channel.bind('notification', function(data) {
-            //increment badge
-            var i = parseInt(document.getElementById("notif-no").innerHTML);
-            if(isNaN(i)){
-              i = 0;
-            }
-
-            document.getElementById("notif-no").innerHTML = i+1;
-            var msg = data.message;
-            var li = document.createElement("li");
-            var txt;
-            if(msg.type == "new_bidder"){
-                txt = "@lang("notification.new_adopter")".replace(":name",msg.name);
-                li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>"+txt+"</a>";
-            }
-            else{
-                li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>Read More</a>";
-            }
-
-
-            document.getElementById("menu-notif").appendChild(li);
+            notificationAdd(data.message);
             console.log(data);
           });
+
+
         </script>
         @yield("top_include")
     </head>
