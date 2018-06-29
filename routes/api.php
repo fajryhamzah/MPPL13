@@ -28,3 +28,6 @@ use Illuminate\Http\Request;
 
   //get info of post
   Route::post("post/detail/","Seeker@getPreviewPost");
+
+  //set read notif
+  Route::post("seen","Notification@seen");

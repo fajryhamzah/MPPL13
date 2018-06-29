@@ -2,7 +2,7 @@
 @section("content")
 @include("layout.menu.afterLogin")
 <div class="row">
-  <div class="col s12" style="padding:1%">
+  <div class="col s12" style="padding:0;padding-top:1%">
     <div class="col s6" style="text-align:right;">
       @if($img->isNotEmpty())
           <div class="sp-loading"><img src="{{ asset("images/sp-loading.gif") }}" alt=""><br>LOADING</div>
@@ -63,13 +63,15 @@
         <div class="col s12">
           @if($detail->status == 0)
             <h5>@lang("seeker/detail.closed",["link" => "<a href='".url("profile/".$detail->adopter_id)."'>".$detail->adopter."</a>"])</h5>
+          @elseif($detail->poster_id == \Session::get("id"))
+            You're the owner
           @else
             <a id="app" class="waves-effect waves-light btn-small"><i class="material-icons left">create</i> @lang("seeker/detail.apply")</a>
           @endif
           <a id="show" class="waves-effect waves-light btn-small light-blue darken-1"><i class="material-icons left">location_on</i> @lang("seeker/detail.show_loca")</a>
         </div>
     </div>
-    <div class="col s12">
+    <div class="col s12" style="padding:0;">
       <div id="form">
         <form name="apply" method="post">
           @if(isset($bidder_count))
@@ -141,7 +143,7 @@
   /* Always set the map height explicitly to define the size of the div
    * element that contains the map. */
   #map {
-    height: 350px;
+    height: 400px;
     width:100%;
   }
   /* Optional: Makes the sample page fill the window. */

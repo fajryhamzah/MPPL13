@@ -188,14 +188,17 @@ class Dashboard extends Controller
   }
 
   public function notif(){
-    $notif = Notification::select("id_post","type","date","title as name")->join("open_adoption","open_adoption.id","id_post")->where("id_target",\Session::get("id"))->where("seen",0)->get();
+    $notif = Notification::select("notification.id","id_post","type",\DB::raw("DATE_FORMAT(date,'%d/%m/%Y') as date"),"title as name")->join("open_adoption","open_adoption.id","id_post")->where("id_target",\Session::get("id"))->where("seen",0)->get();
     $count = $notif->count();
 
     $data["count"] = $count;
     $data["data"] = $notif;
 
     return json_encode($data);
+  }
 
+  public function read($data){
+    dd($data);
   }
 
 }

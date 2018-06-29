@@ -32,6 +32,7 @@ class Notification
       $event["type"] = $this->type[$type];
       $event["id_post"] = $id_post;
       $event["date"] = $date;
+      $event["id"] = $insert->id;
 
       //merge optional event message
       if(!empty($opt)){
@@ -56,6 +57,23 @@ class Notification
   */
   public function getError(){
     return $this->error;
+  }
+
+  /**
+      * set notification status to be seen
+      *
+      * @return string
+  */
+  public function seen( \Illuminate\Http\Request $data){
+    if($data->has("ids")){
+      $id =  $data->input("ids");
+
+      notif::whereIn("id",$id)->update(["seen" => 1]);
+
+      return 200;
+    }
+
+    return 500;
   }
 
 

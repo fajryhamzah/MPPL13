@@ -49,12 +49,12 @@
       <input type="hidden" name="distMax" id="dmax" value="10" />
     </form>
   </div>
-  <div class="col s12" style="height:100%;padding:0px:background-color:#FFFFFF">
-    <div class="col s12" style="height:100%;padding:0px" id="map_parent">
+  <div class="col s12" style="height:100%;padding:0px">
+    <div class="col s12" style="height:100%;padding:0px;" id="map_parent">
         <div id="map"></div>
     </div>
-    <div class="col s3" id="result_parent">
-      <div id="result">
+    <div class="col s3" id="result_parent" style="overflow-y:scroll;height:100%;">
+      <div class="col s12" id="result">
 
       </div>
     </div>

@@ -94,6 +94,7 @@
   <div class="container" style="width:80%;margin-top:2%">
     <div class="row">
       <div class="col s8 offset-s2">
+        {{\Session::get("error")}}
         <form name="new_adopt" method="post" id="open_post" enctype="multipart/form-data">
           <div class="row">
             <div class="input-field col s5">

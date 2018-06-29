@@ -32,7 +32,6 @@ class Owner extends Controller
           'category' => 'required',
           'lat' => 'required',
           'lng' => 'required',
-          'featured' => 'required',
           'image' => 'nullable',
           'gender' => 'required|min:0|max:1',
           'age' => 'required|min:0|max:360',
@@ -339,6 +338,6 @@ class Owner extends Controller
     return $data;
   }
 
-  
+
 
 }
