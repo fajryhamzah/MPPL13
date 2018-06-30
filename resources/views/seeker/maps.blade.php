@@ -3,7 +3,7 @@
 @include("layout.menu.afterLogin")
 <div class="row" style="height:100%">
   <div class="col s12 advance_search">
-    <form name="advance_finder" method="post">
+    <form name="advance_finder" method="post" action="{{url("advance_finder")}}">
       <div class="col s2">
         <select name="category" id="pet">
           <option value="" disabled selected>Category</option>

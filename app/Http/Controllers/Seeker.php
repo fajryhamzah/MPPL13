@@ -37,7 +37,7 @@ class Seeker extends Controller
     * id: integer, unique number of adoption thread
   */
   public function detail($id){
-    $post = AdoptThread::select("open_adoption.id as post_id","title","gender","age","description","post_date","open_adoption.lati","open_adoption.longi","user.id as poster_id",\DB::raw("COALESCE(user.name,username) as name"),"category_pet.name as cate","open_adoption.status")
+    $post = AdoptThread::select("open_adoption.id as post_id","title","gender","age","description","post_date","open_adoption.lati","open_adoption.longi","user.username as poster_id","user.id as id_poster",\DB::raw("COALESCE(user.name,username) as name"),"category_pet.name as cate","open_adoption.status")
     ->join("user","poster_id","user.id")
     ->join("category_pet","open_adoption.category_pet","category_pet.id")
     ->where('open_adoption.id',$id)
@@ -199,7 +199,7 @@ class Seeker extends Controller
                   ->orderBy("post_date", 'ASC')
       					  ->get();
     //dd(\DB::getQueryLog());
-
+    dd($passing);
     return view("seeker.search_result",$passing);
 
   }

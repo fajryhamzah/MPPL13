@@ -32,7 +32,7 @@
                       </div>
                       <div class="col s8 info">
                         <div class="col s12">
-                          <span class="name"><a href="post/{{$a->get("id")}}">{{$a->get("title")}}</a></span>
+                          <span class="name"><a href="{{ url("post/".$a->get("id"))}}">{{$a->get("title")}}</a></span>
                           <span class="date">{{$a->get("post_date")}}</span>
                         </div>
                         <div class="col s12">
@@ -61,7 +61,7 @@
                       </div>
                       <div class="col s8 info">
                         <div class="col s12">
-                          <span class="name"><a href="post/{{$a->get("id")}}">{{$a->get("title")}}</a></span>
+                          <span class="name"><a href="{{ url("post/".$a->get("id")) }}">{{$a->get("title")}}</a></span>
                           <span class="date">{{$a->get("post_date")}}</span>
                         </div>
                         <div class="col s12">

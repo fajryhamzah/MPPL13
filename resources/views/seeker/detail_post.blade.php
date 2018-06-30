@@ -63,7 +63,7 @@
         <div class="col s12">
           @if($detail->status == 0)
             <h5>@lang("seeker/detail.closed",["link" => "<a href='".url("profile/".$detail->adopter_id)."'>".$detail->adopter."</a>"])</h5>
-          @elseif($detail->poster_id == \Session::get("id"))
+          @elseif($detail->id_poster == \Session::get("id"))
             You're the owner
           @else
             <a id="app" class="waves-effect waves-light btn-small"><i class="material-icons left">create</i> @lang("seeker/detail.apply")</a>
