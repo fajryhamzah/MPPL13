@@ -1,21 +1,113 @@
 @extends("layout.index_dashboard")
 @section("content")
 @include("layout.menu.afterLogin")
-<div id="result">
+<div class="row" style="height:100%">
+  <div class="col s12 advance_search">
+    <form name="advance_finder" method="post" action="{{url("advance_finder")}}">
+      <div class="col s2">
+        <select name="category" id="pet">
+          <option value="" disabled selected>Category</option>
+          @foreach($category as $a)
+            <option value="{{ $a->id }}">{{ $a->name }}</option>
+          @endforeach
+        </select>
+      </div>
 
+      <div class="col s2">
+        <select name="type" id="ty">
+          <option value="" disabled selected>Type</option>
+        </select>
+      </div>
+
+      <div class="col s2">
+        <select name="gender">
+          <option value="0">Male</option>
+          <option value="1">Female</option>
+        </select>
+      </div>
+
+      <div class="col s2" style="margin-top:1%">
+        <div style="margin-bottom:3%;">
+            <span>Age</span>
+        </div>
+        <div id="age-slider"></div>
+      </div>
+
+      <div class="col s2" style="margin-top:1%">
+        <div style="margin-bottom:3%;">
+            <span>Distance</span>
+        </div>
+        <div id="distance-slider"></div>
+      </div>
+
+      <div class="col s2" style="margin-top:1%">
+        <button class="btn waves-effect waves-light" type="submit" name="action">Search</button>
+      </div>
+      <input type="hidden" name="ageMin" id="amin" value="0" />
+      <input type="hidden" name="ageMax" id="amax" value="20" />
+      <input type="hidden" name="distMin" id="dmin" value="0" />
+      <input type="hidden" name="distMax" id="dmax" value="10" />
+    </form>
+  </div>
+  <div class="col s12" style="height:100%;padding:0px">
+    <div class="col s12" style="height:100%;padding:0px;" id="map_parent">
+        <div id="map"></div>
+    </div>
+    <div class="col s3" id="result_parent" style="overflow-y:scroll;height:100%;">
+      <div class="col s12" id="result">
+
+      </div>
+    </div>
+  </div>
 </div>
-<div id="map"></div>
 
 
 @stop
 
+@section("css")
+<link rel="stylesheet" href="{{asset("css/animate.css")}}">
+<link rel="stylesheet" href="{{asset("css/nouislider.min.css")}}">
+@stop
+
 @section("top_include")
 <style>
+
+.advance_search{
+  padding: 1% !important;
+}
+
+.preview-name{
+  text-align: left;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.preview-info{
+  text-align: left;
+  font-size:15px;
+}
+
+.time{
+  text-align: left;
+  font-size:10px;
+}
+
+.card-result{
+  border-bottom: 1px solid #C7CDCD;
+  padding: 5% !important;
+}
+
+
+      #result_parent{
+        display: none;
+        padding-left: 0;
+        padding-right: 0;
+      }
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
         height: 100%;
-        margin-top:20px;
+        margin-top: 5px;
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
@@ -68,14 +160,10 @@
         width: 345px;
       }
 
-      .croppie-container .cr-image{
-        position: relative;
+      #result_parent{
+        text-align: center;
       }
 
-      .modal{
-        width:80%;
-        max-height: 85%;
-      }
 </style>
 @stop
 
@@ -83,9 +171,73 @@
 @section("bottom_include")
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env("MAP_API_KEY","nothing") }}&libraries=places"></script>
 <script src="{{ asset("js/markerclusterer.js")}}"></script>
+<script src="{{ asset("js/nouislider.min.js")}}"></script>
+<script type="text/javascript">
+    var slider = document.getElementById('age-slider');
+    noUiSlider.create(slider, {
+     start: [0, 20],
+     connect: true,
+     step: 1,
+     orientation: 'horizontal', // 'horizontal' or 'vertical'
+     range: {
+       'min': 0,
+       'max': 100
+     },
+     format: wNumb({
+       decimals: 0
+     })
+    });
+
+    slider.noUiSlider.on('update', function(values){
+      document.getElementById("amin").value = values[0];
+      document.getElementById("amax").value = values[1];
+    });
+
+    var slide = document.getElementById('distance-slider');
+    noUiSlider.create(slide, {
+     start: [0, 10],
+     connect: true,
+     step: 1,
+     orientation: 'horizontal', // 'horizontal' or 'vertical'
+     range: {
+       'min': 0,
+       'max': 100
+     },
+     format: wNumb({
+       decimals: 0
+     })
+    });
+
+    slide.noUiSlider.on('update', function(values){
+      document.getElementById("dmin").value = values[0];
+      document.getElementById("dmax").value = values[1];
+    });
+</script>
 @stop
 
 @section("jquery")
+$('select').formSelect();
+
+$('#pet').change(function(){
+  $("#ty").empty();
+  $("#ty").append("<option disabled>@lang("open_post/open.wait")</option>");
+  $("#ty").prop("disabled",false);
+  $("#ty").formSelect();
+  $.ajax({
+    url: "{{url('/api/pet')}}/"+$("#pet").val(),
+    type: "get",
+    success: function(result){
+      var ret = $.parseJSON(result);
+      $("#ty").empty();
+      $("#ty").append("<option value='*'>All</option>");
+
+      $.each(ret, function(name,val){
+        $("#ty").append('<option value="'+val.id+'" >'+val.name+'</option>');
+      });
+
+      $("#ty").formSelect();
+  }});
+});
 
       var map;
       var markers = [];
@@ -124,6 +276,29 @@
          getMapBound();
     });
 
+    function addCard(id,name,cate,gender,age,time,image){
+        var myvar = '<div class="col s12 card-result">'+
+
+        '            <div class="col s3" style="padding-right:0">'+
+        '              <img src="'+image+'" alt="" class="circle responsive-img" style="min-height:80px;">'+
+        '            </div>'+
+        '            <div class="col s9" style="padding-left:0">'+
+        '              <div class="col s12 preview-name">'+
+        '                <a href="{{ url("post")}}/'+id+'">'+name+'</a>'+
+        '              </div>'+
+        '              <div class="col s12 preview-info">'+
+        '                '+cate+' - '+gender+' - '+age+
+        '              </div>'+
+        '              <div class="col s12 time">'+
+        '                '+time+
+        '              </div>'+
+        '            </div>'+
+
+        '        </div>';
+
+        return myvar;
+    }
+
 
 
     function getMapBound(){
@@ -131,6 +306,7 @@
 
       if(bound){
         var location = bound.toJSON();
+        location.id= {{$id}};
 
         if(JSON.stringify(location) != prev){
           prev = JSON.stringify(location);
@@ -178,6 +354,10 @@
                               return a.id;
                             });
                             var jsn = JSON.stringify(listIDS);
+                            $("#map_parent").removeClass("s12").addClass("s9");
+                            $("#result_parent").show();
+                            $("#result_parent").addClass("fadeInRight");
+                            $("#result").html("<img class='wait' src='{{asset("images/loading.gif")}}' />");
 
                             $.ajax({
                               type: "POST",
@@ -187,9 +367,9 @@
                               success:function(response){
                                 if(response){
                                   resp = JSON.parse(response);
-
+                                  $("#result").html("");
                                   resp.forEach(function(e){
-                                    $("#result").append("<span>"+e.title+"</span>");
+                                    $("#result").append(addCard(e.id,e.title,e.cate,e.gender,e.age,e.date,e.link_name));
                                   });
                                 }
                               }

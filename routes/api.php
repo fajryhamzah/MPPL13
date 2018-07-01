@@ -27,4 +27,7 @@ use Illuminate\Http\Request;
   Route::get("post/list/{id}/{status}","Owner@getPostAdoptionThread");
 
   //get info of post
-  Route::post("post/detail/","Owner@getPreviewPost");
+  Route::post("post/detail/","Seeker@getPreviewPost");
+
+  //set read notif
+  Route::post("seen","Notification@seen");

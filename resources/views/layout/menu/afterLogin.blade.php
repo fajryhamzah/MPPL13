@@ -11,12 +11,20 @@
     <li><a href="{{ url("open") }}">My Post</a></li>
     <li><a href="{{ url("finder") }}">Adoption Info</a></li>
   </ul>
+  <!-- Dropdown Structure -->
+  <ul id="dropdown3" class="dropdown-content">
+    <div id="menu-notif">
+
+    </div>
+    <!-- <li><a href="{{ url("finder") }}">Read More</a></li> -->
+  </ul>
   <nav>
     <div class="nav-wrapper">
       <a href="{{ url("") }}" class="brand-logo">
           <img src="{{ asset("images/logo1.png") }}" alt="" style="width:60%;">
       </a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a class="dropdown-trigger notif" href="#!" data-target="dropdown3">Notification <span class="badge light-blue darken-2 white-text" id="notif-no" style="display:none"></span></a></li>
         <li><a href="{{ url("dashboard") }}">Dashboard</a></li>
         <li><a href="{{ url("finder") }}">Find Pet</a></li>
         <li><a class="dropdown-trigger" href="#!" data-target="dropdown2">Adoption<i class="material-icons right">arrow_drop_down</i></a></li>

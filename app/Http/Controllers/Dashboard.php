@@ -9,6 +9,7 @@ use App\Http\Controllers\Email;
 use App\Model\User;
 use App\Model\PetCategory;
 use App\Model\AdoptThread;
+use App\Model\Notification;
 use App\Http\Controllers\Owner;
 use App\Http\Controllers\HomePage;
 
@@ -70,8 +71,6 @@ class Dashboard extends Controller
         $msg = trans("register.exist");
         return \Redirect::to(url("/register"))->with(["error" => $msg]);
       }
-
-
   }
 
   //verification for activation after regist
@@ -121,6 +120,7 @@ class Dashboard extends Controller
     \Session::put('id', $data->id);
     \Session::put('username', $data->username);
     \Session::put('img_profile', $data->img);
+    \Session::put('channel', sha1($data->id.env("APP_KEY")));
 
     return json_encode(array('code'=>200,'msg'=> "Ok" ));
   }
@@ -150,11 +150,17 @@ class Dashboard extends Controller
     return view("profile.edit_profile",$data);
   }
 
+  /*
+    * Get all avalaible post by location bound
+    * GET /api/pet/location
+    *
+  */
   public function getAllLocation(Request $r){
     $south = $r->input("south");
     $west = $r->input("west");
     $north = $r->input("north");
     $east = $r->input("east");
+    $id = $r->input("id");
 
     if( (!$south) || (!$west) || (!$north) || (!$east) ){
       return \Response::json([
@@ -162,11 +168,37 @@ class Dashboard extends Controller
       ], 400);
     }
 
-    $data = AdoptThread::select(\DB::raw("open_adoption.id,title,lati,longi,IF(parent_id is null, category_pet.id,parent_id) as cate"))->join("category_pet","category_pet.id","open_adoption.category_pet")->where("status",1)->where("poster_id","!=",\Session::get("id"))->where("lati",">",$south)->where("lati","<",$north)->where("longi",">",$west)->where("longi","<",$east)->get()->toJSON();
+    //\DB::enableQueryLog();
+    $data = AdoptThread::select(\DB::raw("open_adoption.id,title,lati,longi,IF(parent_id is null, category_pet.id,parent_id) as cate"))
+    ->join("category_pet","category_pet.id","open_adoption.category_pet")
+    ->where("status",1)
+    ->where("poster_id","!=",$id)
+    ->where("lati",">",$south)
+    ->where("lati","<",$north)
+    ->where("longi",">",$west)
+    ->where("longi","<",$east)
+    ->get()->toJSON();
+
+
+    //dd(\DB::getQueryLog());
     return \Response::json([
         'data' => $data
     ], 200);
 
+  }
+
+  public function notif(){
+    $notif = Notification::select("notification.id","id_post","type",\DB::raw("DATE_FORMAT(date,'%d/%m/%Y') as date"),"title as name")->join("open_adoption","open_adoption.id","id_post")->where("id_target",\Session::get("id"))->where("seen",0)->get();
+    $count = $notif->count();
+
+    $data["count"] = $count;
+    $data["data"] = $notif;
+
+    return json_encode($data);
+  }
+
+  public function read($data){
+    dd($data);
   }
 
 }

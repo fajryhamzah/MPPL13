@@ -12,13 +12,22 @@ use App\Model\Adopting;
 class Profile extends Controller
 {
 
-  //Profile Edit
+  /*
+    * Showing edit profile on setting page
+    * GET /setting/profile
+    *
+  */
   public function editProfile(){
     $data = User::select("username","email","bio","img","lati","longi","name")->where("id",\Session::get("id"))->first();
     $data['page'] = "general";
     return view("profile.edit_profile",$data);
   }
 
+  /*
+    * Handling data of edit profile
+    * POST /setting/profile
+    *
+  */
   public function editProfileSave(Request $r){
     $rules = array(
         'username' => 'required|min:4',
@@ -70,7 +79,11 @@ class Profile extends Controller
   }
 
 
-  //Change Password
+  /*
+    * Change user password
+    * POST /setting/change_password
+    *
+  */
   public function changePassword(Request $r){
     $rules = array(
         'oldpass' => 'required',
@@ -113,6 +126,11 @@ class Profile extends Controller
     }
   }
 
+  /*
+    * Showing edit profile on setting page
+    * GET /profile/{uname}
+    * uname : can be an id or username of the user
+  */
   public function showProfile(Request $r){
     if($r->uname){ //another profile
       $id = $r->uname;
@@ -140,6 +158,13 @@ class Profile extends Controller
     return view("profile.profile",$data);
   }
 
+  /*
+    * Get all post made by user
+    * GET api/list/{id}/{page}/{slug}
+    * id : id of the user
+    * page : page number
+    * slug : type of post
+  */
   public function getPostProfile($id,$page,$slug,$bypass = false){
     $category = PetCategory::whereNull("parent_id")->get();
 
@@ -148,31 +173,54 @@ class Profile extends Controller
         return $page;
     });
 
-    $data = AdoptThread::select("open_adoption.id as id","title","gender","age","post_date","category_pet.id","parent_id","name")
-                          ->join("category_pet","category_pet","category_pet.id");
+    //\DB::enableQueryLog();
+    if($slug == 0){ //regular post
+      $data = AdoptThread::select("link_name","open_adoption.id as id","title","gender","age","post_date","category_pet.id as cate","parent_id","name");
+    }
+    else{ //adopted post
+      $data = AdoptThread::select("link_name","open_adoption.id as id","title","gender","age","post_date","category_pet.id as cate","name",\DB::raw("apply_at"));
+    }
+
+    $data = $data->join("category_pet","category_pet","category_pet.id")
+                  ->leftJoin("gallery",function($q){
+                      $q->on("open_adoption_id","=","open_adoption.id")
+                      ->where("is_featured",1);
+                  });
+
     if($slug == 0){ //regular post
       $data = $data->where("status",1);
     }
     else{//adopted post
-      $data = $data->where("status",0);
+      $data = $data->join("adopting","post_id","open_adoption.id")->where("adopting.status",1)->where("open_adoption.status",0);
     }
 
-    $data = $data->where("poster_id",$id)->orderBy("open_adoption.id","DESC")->paginate(5);
 
-    $data = $data->map(function($item) use($category){
-      $item->post_date = date("d/m/Y",strtotime($item->post_date));
+    $data = $data->where("poster_id",$id)->orderBy("open_adoption.id","DESC")->paginate(5);
+    //dd(\DB::getQueryLog());
+    $data = $data->map(function($item) use($category,$slug){
+      $item->post_date = date("d M Y",strtotime($item->post_date));
+      if($item->apply_at){
+        $item->apply_at = date("d M Y",strtotime($item->apply_at));
+      }
+
+      $item->link_name = ($item->link_name)? asset("img/product/".$item->link_name):asset("images/default.png");
 
       $item = collect($item);
       //dd($item);
-      if($item->get("parent_id")){ //if not parent
-        $item->put("parent_category",$category->where("id",$item->get("parent_id"))->first()->name); //push category parent name
+
+      if($slug == 0){
+        if($item->get("parent_id")){ //if not parent
+          $item->put("parent_category",$category->where("id",$item->get("parent_id"))->first()->name); //push category parent name
+        }
       }
+
       return $item;
     });
 
     //for request by api
     if(!$bypass) return $data->toJson();
 
+    //dd($data);
     return $data;
   }
 
