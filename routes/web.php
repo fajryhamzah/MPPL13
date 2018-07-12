@@ -68,6 +68,7 @@ Route::group(['middleware' => 'hasLogin'], function () {
     return view("profile.change_password",$data);
   });
   Route::post("setting/change_password","Profile@changePassword");
+  Route::get("notification","Profile@notification");
 
   //finder
   Route::get("finder","Seeker@index");
