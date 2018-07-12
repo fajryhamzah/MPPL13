@@ -15,6 +15,9 @@ Route::get("/",function(){
   return view("homepage");
 });
 
+//see avalaible
+Route::get("post/{id}","Seeker@detail");
+
 //WHEN USER DONT HAVE CREDENTIAL
 Route::group(['middleware' => 'notHaveLogin'], function () {
   //REGISTRATION ROUTES
@@ -68,7 +71,8 @@ Route::group(['middleware' => 'hasLogin'], function () {
     return view("profile.change_password",$data);
   });
   Route::post("setting/change_password","Profile@changePassword");
-  Route::get("notification","Profile@notification");
+  Route::get("setting/notification","Profile@notification");
+  Route::post("setting/notification","Profile@notificationHandler");
 
   //finder
   Route::get("finder","Seeker@index");
@@ -77,7 +81,6 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
 
   //POST
-  Route::get("post/{id}","Seeker@detail");
   Route::post("post/{id}","Seeker@apply"); //bid
 
   Route::get('logout','Dashboard@logout');

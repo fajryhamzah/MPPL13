@@ -224,4 +224,47 @@ class Profile extends Controller
     return $data;
   }
 
+  /*
+    * Interface of setting email notification
+    * GET /setting/notification
+  */
+
+  public function notification(){
+    $data = User::select("notif_new_bidder","notif_choosen","notif_new_post")->where("id",\Session::get("id"))->first();
+    $data['page'] = "email";
+
+    return view("profile/notification",$data);
+  }
+
+  /*
+    * Setting notification handler
+    * POST /setting/notification
+    *
+  */
+
+  public function notificationHandler(Request $r){
+    $rules = array(
+      "bidder" => "required",
+      "choosen" => "required",
+      "post" => "required",
+    );
+
+    $validator = \Validator::make($r->all(),$rules);
+
+    if($validator->fails()){
+      return \Redirect::back()->with(["error" => $validator->errors()]);
+    }
+
+    $data = User::find(\Session::get("id"));
+    $data->notif_new_bidder = ($r->input("bidder") == "on")? 1:0;
+    $data->notif_choosen = ($r->input("choosen") == "on")? 1:0;
+    $data->notif_new_post = ($r->input("post") == "on")? 1:0;
+
+    $data->save();
+
+    return \Redirect::back()->with(["success" => trans("profile/notif.saved")]);
+  }
+
+
+
 }

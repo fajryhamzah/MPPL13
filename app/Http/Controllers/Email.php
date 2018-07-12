@@ -16,5 +16,14 @@ class Email extends Controller
       });
   }
 
+  public function new_bidder($email,$username,$id,$name){
+    $data = array('name'=>$username,'id'=>$id);
+    Mail::send(['html'=>'mailTemplate.new_bidder'], $data, function($message) use($email,$username,$name) {
+         $message->to($email, $username)->subject
+            ('You got new bidder on '.$name);
+         $message->from('donotreply@adopet.com','Adopet Notification System');
+      });
+  }
+
 
 }

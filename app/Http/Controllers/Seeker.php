@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Notification;
+use App\Http\Controllers\Email;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Model\AdoptThread;
@@ -93,7 +94,7 @@ class Seeker extends Controller
     if($validator->fails()){
         return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
     }
-    $thread = AdoptThread::find($id);
+    $thread = AdoptThread::join("user","user.id","open_adoption.poster_id")->where("open_adoption.id",$id)->first();
 
     if($thread->status == 0){
       return \Redirect::back()->with(["error" => trans("seeker/detail.end")]);
@@ -121,10 +122,15 @@ class Seeker extends Controller
           $link_name = asset("img/avatar/default.png");
         }
 
-
         $notif = new Notification();
 
         $notif->addNotification($thread->poster_id,$id,0,array("name" => $thread->title, "img" => $link_name));
+
+        //check email notif
+        if($thread->notif_new_bidder){
+          $em = new Email;
+          $em->new_bidder($thread->email,$thread->username,$id,$thread->title);
+        }
       }
 
       return \Redirect::back()->with(["success" => "success"]);
