@@ -4,7 +4,6 @@
   <section>
     <div style="margin-top:2%;">
       <div class="row">
-        {{\Session::get("error")}}
         <div id="modal1" class="modal">
           <div class="modal-content">
             <h4>@lang("profile/edit_profile.crop")</h4>
@@ -16,6 +15,7 @@
             @include("profile.side")
             <div class="col s7 content">
               <div class="col s12 offset-s2">
+                {{ \Session::get("error") }}
                 <form name="editProf" method="post" enctype="multipart/form-data">
                     <div class="row">
                       <div class="col s4 offset-s2" style="text-align:center">

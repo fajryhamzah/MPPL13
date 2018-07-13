@@ -34,13 +34,13 @@ class Profile extends Controller
         'name' => 'max:50',
         'bio' => 'max:60',
         'email' => 'required|email',
-        'img_hidden' => "is_png"
+        'img_hidden' => "nullable|is_png"
     );
 
     $validator = \Validator::make($r->all(), $rules);
 
     if($validator->fails()){
-        return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
+        return \Redirect::back()->with(["error" => $validator->errors()]);
     }
 
     $update = User::find(\Session::get("id"));
@@ -70,11 +70,11 @@ class Profile extends Controller
     try{
       $update->save();
 
-      return \Redirect::to(url("/profile"))->with(['success' => "Profile Updated"]);
+      return \Redirect::back()->with(['success' => "Profile Updated"]);
     }
     catch(\Exception $e){
       $msg = $e->getMessage();
-      return \Redirect::to(url("/profile"))->with(["error" => $msg]);
+      return \Redirect::back()->with(["error" => $msg]);
     }
   }
 

@@ -18,4 +18,7 @@ return [
     'date' => "Posted",
     'closed' => "Adopted by :link",
     'end' => "Post Ended",
+    'show_bid' => "Show Bidder",
+    'approve' => "Approve",
+    'warning_text' => "Are you sure want to give your beloved pet to this person?",
   ];

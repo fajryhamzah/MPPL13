@@ -2,10 +2,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Email;
 use Illuminate\Http\Request;
 use App\Model\AdoptThread;
 use App\Model\PetCategory;
 use App\Model\Gallery;
+use App\Model\User;
+use App\Model\Adopting;
 use Yajra\Datatables\Datatables;
 
 class Owner extends Controller
@@ -99,6 +102,27 @@ class Owner extends Controller
 
 
         Gallery::insert($url);
+
+        //send email notif for nearby seeker
+        //get the pet category
+        $pet_type = PetCategory::find($cate)->name;
+        //haversine formula
+        $distance_select = sprintf(
+    					                "ROUND(( 6371 * acos( cos( radians(%s) )" ." * cos( radians( lati ) )" .
+    					                        "* cos( radians( longi ) - radians(%s) )" .
+    					                        "+ sin( radians(%s) ) * sin( radians( lati ) )" .
+    					                    ")" .
+    					                "), 2 ) " ."AS distance",$lat,$lng,$lat);
+
+        $data = User::select( \DB::raw("*" .",".  $distance_select) )->where("id","!=",\Session::get("id"))->where("active",1)->having( 'distance', '<=', 5 )
+        ->orderBy( 'distance', 'ASC' )->get();
+
+        $notif = new Email;
+
+
+        foreach($data as $d){
+          $notif->postNearby($d->email,$d->username,$insert->id,$title,$pet_type,$age);
+        }
 
         return \Redirect::to(url("/open"));
       }
@@ -273,7 +297,7 @@ class Owner extends Controller
           ->addColumn("name",function($row){
             $gender = ($row->gender == 0)? trans("open_post/post.male"):trans("open_post/post.female");
             $age = $row->age." ".trans("open_post/post.age_unit");
-            $ret = "<span style='display:block'>".$row->title."</span>";
+            $ret = "<span style='display:block'><a href='".url("post/".$row->id)."'>".$row->title."</a></span>";
             $ret .= "<span>".$age." | ".$gender." | ".$row->pet."</span>";
             return $ret;
           })
@@ -336,6 +360,51 @@ class Owner extends Controller
     if(!$data) return false;
 
     return $data;
+  }
+
+
+  //owner approve bidder
+  public function approve($id,$adopt){
+    //check session holder is authorize to the post
+    $data = AdoptThread::find($id);
+
+    if(!$data){
+      return 404;
+    }
+
+    if($data->poster_id != \Session::get("id")){
+      return \Redirect::back()->with(["error" => 405]);
+    }
+
+    //check the adopting
+    $adopting = Adopting::find($adopt);
+
+    if(!$adopting){
+      return \Redirect::back()->with(["error" => 406]);
+    }
+
+    $adopting->status = 1;
+    $data->status = 0;
+
+    try{
+      $adopting->save();
+      $data->save();
+
+      //send email to the choosen one
+      $user = User::select("username","email","notif_choosen")->where("id",$adopting->bidder_id)->first();
+
+      if( ($user) && ($user->notif_choosen) ){
+        $notif = new Email;
+
+        $notif->choosen($user->email,$user->username,$data->id,$data->title);
+      }
+
+      return \Redirect::back()->with(["success" => 200]);
+    }
+    catch(\Exception $e){
+      return \Redirect::back()->with(["error" => $e->getMessage()]);
+    }
+
   }
 
 

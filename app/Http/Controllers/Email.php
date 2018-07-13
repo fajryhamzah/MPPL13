@@ -25,5 +25,23 @@ class Email extends Controller
       });
   }
 
+  public function postNearby($email,$username,$id,$name,$type,$age){
+    $data = array("name" => $name,"id" => $id, "type" => $type, "age" => $age);
+    Mail::send(['html'=>'mailTemplate.nearby'], $data, function($message) use($email,$username) {
+         $message->to($email, $username)->subject
+            ("We got some good news for you!");
+         $message->from('donotreply@adopet.com','Adopet Notification System');
+      });
+  }
+
+  public function choosen($email,$username,$id,$name){
+    $data = array("name" => $name,"id" => $id);
+    Mail::send(['html'=>'mailTemplate.choosen'], $data, function($message) use($email,$username) {
+         $message->to($email, $username)->subject
+            ("Congratulation!");
+         $message->from('donotreply@adopet.com','Adopet Notification System');
+      });
+  }
+
 
 }

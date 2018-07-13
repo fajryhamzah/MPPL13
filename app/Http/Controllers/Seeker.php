@@ -64,13 +64,16 @@ class Seeker extends Controller
     $data["detail"] = $post;
     $data["id"] = $id;
     $data["img"] = $img;
-    $bidder = Adopting::where("post_id",$id)->get();
+    $bidder = Adopting::where("post_id",$id);
 
     //check if the post is belong to the session holder
-    if($post->poster_id == \Session::get("id")){
+    if($post->id_poster == \Session::get("id")){
+      $bidder = $bidder->join("user","bidder_id","user.id")->select("adopting.id as adopt_id","message","name","username","user.id","apply_at")->get();
       $data["bidder_count"] = $bidder->count();
+      $data["bidder_list"] = $bidder;
     }
     else{
+      $bidder = $bidder->get();
       if($bidder->where("bidder_id",\Session::get("id"))->count()){ //already bid
         $data["bidder_post"] = $bidder->where("bidder_id",\Session::get("id"))->first();
       }

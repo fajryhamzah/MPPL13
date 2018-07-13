@@ -42,11 +42,6 @@ Route::group(['middleware' => 'notHaveLogin'], function () {
 
 });
 
-
-
-
-
-
 //WHEN USER HAS LOGIN
 Route::group(['middleware' => 'hasLogin'], function () {
   Route::get("/dashboard","Dashboard@index");
@@ -81,9 +76,9 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
 
   //POST
-  Route::post("post/{id}","Seeker@apply"); //bid
-
+  Route::post("post/{id}","Seeker@apply");
   Route::get('logout','Dashboard@logout');
+  Route::get("post/{id}/approve/{adopt}","Owner@approve");
 
 
   //fix it later

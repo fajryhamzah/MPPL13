@@ -1,6 +1,17 @@
 @extends("layout.index_dashboard")
 @section("content")
 @include("layout.menu.afterLogin")
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <h4>@lang("open_post/post.sure")</h4>
+    <p>@lang("seeker/detail.warning_text")</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" id="delLink" class="modal-action modal-close waves-effect waves-green btn-flat">@lang("open_post/post.yes")</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat">@lang("open_post/post.no")</a>
+  </div>
+</div>
+
 <div class="row">
   <div class="col s12" style="padding:0;padding-top:1%">
     <div class="col s6" style="text-align:right;">
@@ -63,8 +74,8 @@
         <div class="col s12">
           @if($detail->status == 0)
             <h5>@lang("seeker/detail.closed",["link" => "<a href='".url("profile/".$detail->adopter_id)."'>".$detail->adopter."</a>"])</h5>
-          @elseif($detail->id_poster == \Session::get("id"))
-            You're the owner
+          @elseif(isset($bidder_count))
+            <a id="app" class="waves-effect waves-light btn-small"><i class="material-icons left">create</i> @lang("seeker/detail.show_bid")</a>
           @else
             <a id="app" class="waves-effect waves-light btn-small"><i class="material-icons left">create</i> @lang("seeker/detail.apply")</a>
           @endif
@@ -76,9 +87,23 @@
         <form name="apply" method="post">
           @if(isset($bidder_count))
             You're the owner here the Count: {{ $bidder_count }}
+            <ul class="collapsible">
+              @foreach($bidder_list as $bid)
+                <li>
+                  <div class="collapsible-header">
+                      <img src="{{ (file_exists(public_path()."img/avatar/".$bid->img)) ? asset("img/avatar/").$bid->img:asset("images/default.png") }}" alt="" class="circle propic">
+                      <div>{{ ($bid->name)? $bid->name:$bid->username }}</div>
+                      <div>{{ $bid->apply_at }}</div>
+                   </div>
+                  <div class="collapsible-body">
+                    <span class="msg">{{$bid->message}}</span>
+                    <button data-target="modal1" class="btn modal-trigger" data-link="{{ url("post/".$id."/approve/".$bid->adopt_id) }}">@lang("seeker/detail.approve")</button>
+                  </div>
+                </li>
+              @endforeach
+            </ul>
           @else
             {{ csrf_field() }}
-
             @if(isset($bidder_post))
               <span>@lang("seeker/detail.already")</span>
               <div class="row">
@@ -152,6 +177,20 @@
     margin: 0;
     padding: 0;
   }
+
+  .msg{
+    white-space: pre;
+    display: block;
+  }
+
+  .propic{
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    left: 15px;
+    display: inline-block;
+    vertical-align: middle;
+  }
 </style>
 @stop
 
@@ -176,8 +215,14 @@
 
 @section("jquery")
 $('.sp-wrap').smoothproducts();
+$('.collapsible').collapsible();
+$('.modal').modal();
 var map = null;
 var marker;
+
+$(".modal-trigger").on("click",function(){
+  $("#delLink").attr("href",$(this).data("link"));
+});
 
 $("#app").on("click",function(){
   $("#form").removeClass("animated fadeOutRight");
