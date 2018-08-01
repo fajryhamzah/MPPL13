@@ -399,6 +399,10 @@ class Owner extends Controller
         $notif->choosen($user->email,$user->username,$data->id,$data->title);
       }
 
+      $notif = new Notification();
+
+      $notif->addNotification($adopting->bidder_id,$data->id,1,array("name" => $data->title));
+
       return \Redirect::back()->with(["success" => 200]);
     }
     catch(\Exception $e){

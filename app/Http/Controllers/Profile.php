@@ -152,8 +152,7 @@ class Profile extends Controller
 
     $data["post"] = $this->getPostProfile($id,1,0,true);
     $data["adopted"] = $this->getPostProfile($id,1,1,true);
-    //$data["adopting"] = $this->getAdoptedProfile($id,true);
-
+    $data["adopting"] = $this->getPostProfile($id,1,2,true);
 
     return view("profile.profile",$data);
   }
@@ -188,14 +187,17 @@ class Profile extends Controller
                   });
 
     if($slug == 0){ //regular post
-      $data = $data->where("status",1);
+      $data = $data->where("status",1)->where("poster_id",$id)->orderBy("open_adoption.id","DESC");
     }
-    else{//adopted post
-      $data = $data->join("adopting","post_id","open_adoption.id")->where("adopting.status",1)->where("open_adoption.status",0);
+    else if($slug == 1){//adopted post
+      $data = $data->join("adopting","post_id","open_adoption.id")->where("adopting.status",1)->where("open_adoption.status",0)->where("poster_id",$id)->orderBy("open_adoption.id","DESC");
+    }
+    else{ //adopting
+      $data = $data->join("adopting","post_id","open_adoption_id")->where("adopting.status",1)->where("bidder_id",$id);
     }
 
 
-    $data = $data->where("poster_id",$id)->orderBy("open_adoption.id","DESC")->paginate(5);
+    $data = $data->paginate(5);
     //dd(\DB::getQueryLog());
     $data = $data->map(function($item) use($category,$slug){
       $item->post_date = date("d M Y",strtotime($item->post_date));

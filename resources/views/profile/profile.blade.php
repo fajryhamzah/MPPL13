@@ -81,7 +81,34 @@
                   </div>
               </div>
 
-              <div id="adopting" class="col s12"></div>
+              <div id="adopting" class="col s12">
+                @foreach($adopting as $a)
+                  <div class="col s12 post">
+                    <div class="col s8">
+                      <div class="col s2">
+                        <img src="{{ $a->get("link_name") }}" class="circle" />
+                      </div>
+                      <div class="col s8 info">
+                        <div class="col s12">
+                          <span class="name"><a href="{{ url("post/".$a->get("id")) }}">{{$a->get("title")}}</a></span>
+                          <span class="date">{{$a->get("post_date")}}</span>
+                        </div>
+                        <div class="col s12">
+                          <span class="sub">{{$a->get("name")}} - {{($a->get("gender") == 0)? trans("profile/profile.male"):trans("profile/profile.female")}}, {{$a->get("age")}} @lang("profile/profile.age_unit")</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s4 center-align parent-div">
+                      <span class="parent">{{$a->get("apply_at")}}</span>
+                    </div>
+                  </div>
+                @endforeach
+
+                  <div class="col s12 seemore adt center-align">
+                    <span style='display:none'><img class='wait' src='{{asset("images/loading.gif")}}' /></span>
+                    <a href="#" class="seemore_adopting">See more</a>
+                  </div>
+              </div>
             </div>
 
           </div>
@@ -208,6 +235,34 @@
 
 
 
+  });
+
+  $(".seemore_adopting").on("click",function(e){
+    e.preventDefault();
+
+    $(".adt span").show();
+    $(this).hide();
+    $.ajax({
+      url: "{{ url("api/post/list/".$id) }}/"+page+"/2/",
+      success: function(result){
+        page1 += 1;
+        result = JSON.parse(result);
+
+        //if empty
+        if(result.length == 0){
+          $(".adt span").html("no more");
+        }
+        else{
+          result.forEach(function(a){
+            $(addPost(a)).insertBefore(".adt");
+          });
+
+          $(".adt span").hide();
+          $(".seemore_adopting").show();
+        }
+      }
+
+    });
   });
 
   function addPost(a){

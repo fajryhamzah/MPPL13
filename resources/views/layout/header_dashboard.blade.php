@@ -41,6 +41,10 @@
                   txt = "@lang("notification.new_adopter")".replace(":name",msg.name);
                   li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>"+txt+"</a><span>"+msg.date+"</span>";
               }
+              else if(msg.type == "choosen"){
+                txt = "Congrats you are choosen to be the new owner";
+                li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>"+txt+"</a><span>"+msg.date+"</span>";
+              }
               else{
                   li.innerHTML = "<a href='{{ url("post") }}/"+msg.id_post+"'>Read More</a>";
               }
