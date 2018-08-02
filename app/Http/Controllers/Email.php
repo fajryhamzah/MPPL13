@@ -12,7 +12,7 @@ class Email extends Controller
     Mail::send(['html'=>'mailTemplate.confirmationRegist'], $data, function($message) use($email,$username) {
          $message->to($email, $username)->subject
             ('Thank you for registering');
-         $message->from('regist@adopet.com','Adopet Register Bot');
+         $message->from('donotreply@adopet.com','Adopet Register Bot');
       });
   }
 
@@ -39,6 +39,15 @@ class Email extends Controller
     Mail::send(['html'=>'mailTemplate.choosen'], $data, function($message) use($email,$username) {
          $message->to($email, $username)->subject
             ("Congratulation!");
+         $message->from('donotreply@adopet.com','Adopet Notification System');
+      });
+  }
+
+  public function forgot($email,$username,$id,$name){
+    $data = array("username"=>$username, "name" => $name,"id" => $id);
+    Mail::send(['html'=>'mailTemplate.forgot'], $data, function($message) use($email,$username) {
+         $message->to($email, $username)->subject
+            ("Password Change");
          $message->from('donotreply@adopet.com','Adopet Notification System');
       });
   }

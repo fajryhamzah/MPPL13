@@ -16,6 +16,78 @@ use App\Http\Controllers\HomePage;
 class Dashboard extends Controller
 {
 
+  /*
+    * Forgot password handler
+    * POST /forgot
+    *
+  */
+  public function forgot(Request $r){
+    $input = $r->input("uname");
+
+    $user = User::where("username",$input)->orWhere("email",$input)->first();
+
+    if(!$user){
+      return 402;
+    }
+
+    $hash = sha1($user->verifyHash.time());
+    $user->forgotHash = \DB::raw("UNHEX('".$hash."')");
+
+    try{
+      $user->save();
+      $mail = new Email;
+      $mail->forgot($user->email,$user->username,$hash,$user->name);
+
+      return 200;
+    }
+    catch(\Exception $e){
+      return 403;
+    }
+  }
+
+  /*
+    * setting new pasword when forgot interface
+    * POST /forgot/{hash}
+    *
+  */
+  public function forgotConfirm($hash,Request $r){
+    $rules = array(
+        'pass' => 'required|min:4',
+        'confirmpass' => 'required|min:4',
+    );
+
+    $validator = \Validator::make($r->all(), $rules);
+
+    if($validator->fails()){
+        return \Redirect::back()->with(["error" => implode("<br />",$validator->errors()->all()) ]);
+    }
+
+    $pass = $r->input('pass');
+
+    if($pass != $r->input("confirmpass")){
+      return \Redirect::back()->with(["error" => trans("forgot.not_same")]);
+    }
+
+    $user = User::where("forgotHash",\DB::raw("UNHEX('".$hash."')"))->first();
+
+    if(!$user){
+      return 404;
+    }
+
+    $user->password = md5($pass);
+    $user->forgotHash = null;
+
+    try{
+      $user->save();
+      return \Redirect::to(url("login"))->with(["success" => trans("forgot.changed")]);
+    }
+    catch(\Exception $e){
+      return \Redirect::back()->with(["error" => "2@300xkqxmcc7%%$sncbshqy$$@$.#\\.casdfxcxP;"]);
+    }
+
+
+
+  }
 
   //handling a registration form
   public function register(Request $r){
@@ -110,11 +182,11 @@ class Dashboard extends Controller
       })->first();
     //dd(\DB::getQueryLog());
     if(!$data){
-      return json_encode(array('code'=>402,'msg'=> "username and password is not match" ));
+      return json_encode(array('code'=>402,'msg'=> trans("login.not_match") ));
     }
 
     if($data->active == 0){
-      return json_encode(array('code'=>403,'msg'=> "This account has not been activated yet" ));
+      return json_encode(array('code'=>403,'msg'=> trans("login.not_active") ));
     }
 
     \Session::put('id', $data->id);
@@ -195,10 +267,6 @@ class Dashboard extends Controller
     $data["data"] = $notif;
 
     return json_encode($data);
-  }
-
-  public function read($data){
-    dd($data);
   }
 
 }

@@ -12,7 +12,7 @@
               <img src="{{ asset("images/logo2.png")}}" />
               <span class="card-title">@lang("login.sign_in")</span>
               <p>@lang("login.sub_sign_in")</p>
-
+              <span class="helper-text succ" style="color:#66bb6a;">{{ \Session::get("success")}}</span>
               <form name="login" method="post" id="login">
 
                 <div class ="row">
@@ -24,6 +24,12 @@
                   <div class="input-field col s12">
                     <input type="password" name="pass" class="form-control" id="emai" required/>
                     <label for="emai" class="lbl">Password</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col right s12 right-align">
+                    <span><a href="{{ url('forgot') }}">@lang("login.forgot")</a></span>
                   </div>
                 </div>
 

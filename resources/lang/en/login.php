@@ -7,5 +7,8 @@ return [
     'button' => "Login",
     'error' => "username and password is not match",
     'error_active' => "This account has not been activated yet",
+    'forgot' => "Forgot Password",
     'sign_up' => "Don't have an account? <a href='".url("register")."'>Sign up</a> here!",
+    'not_match' => "Username and password is not match",
+    'not_active' => "This account has not been activated yet",
 ];

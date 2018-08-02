@@ -40,6 +40,18 @@ Route::group(['middleware' => 'notHaveLogin'], function () {
   });
   Route::post('login','Dashboard@login');
 
+  //forgot password
+  Route::get('forgot',function(){
+    return view('forgot');
+  });
+
+  Route::post('forgot','Dashboard@forgot');
+  Route::get('forgot/{hash}',function(){
+    return view('forgotChange');
+  });
+
+  Route::post('forgot/{hash}','Dashboard@forgotConfirm');
+
 });
 
 //WHEN USER HAS LOGIN
