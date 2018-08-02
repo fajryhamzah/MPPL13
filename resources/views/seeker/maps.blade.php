@@ -45,12 +45,19 @@
       </div>
       <input type="hidden" name="ageMin" id="amin" value="0" />
       <input type="hidden" name="ageMax" id="amax" value="20" />
-      <input type="hidden" name="distMin" id="dmin" value="0" />
       <input type="hidden" name="distMax" id="dmax" value="10" />
+      <input type="hidden" name="lat" id="lat" />
+      <input type="hidden" name="lng" id="lng" />
     </form>
   </div>
   <div class="col s12" style="height:100%;padding:0px">
     <div class="col s12" style="height:100%;padding:0px;" id="map_parent">
+      <input id="pac-input" class="controls" type="text" placeholder="@lang("open_post/open.loca_holder")">
+
+      <a id="gps">
+        <i class="medium material-icons">gps_fixed</i>
+      </a>
+
         <div id="map"></div>
     </div>
     <div class="col s3" id="result_parent" style="overflow-y:scroll;height:100%;">
@@ -128,13 +135,29 @@
 
       #pac-input {
         background-color: #fff;
-        font-family: Roboto;
         font-size: 15px;
         font-weight: 300;
-        margin-left: 12px;
+        margin-left: 50px;
+        margin-top:10px;
         padding: 0 11px 0 13px;
         text-overflow: ellipsis;
         width: 300px;
+      }
+
+      #gps {
+        cursor:pointer;
+        color: #42a5f5;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-top:10px;
+        margin-right:10px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+      }
+
+      #gps:hover{
+        color: #2196f3;
       }
 
       #pac-input:focus {
@@ -173,6 +196,12 @@
 <script src="{{ asset("js/markerclusterer.js")}}"></script>
 <script src="{{ asset("js/nouislider.min.js")}}"></script>
 <script type="text/javascript">
+
+    @if(\Session::has("error"))
+      var toastHTML = '<span class="card-panel red lighten-3">{!! \Session::get("error") !!}</span>';
+      M.toast({html: toastHTML});
+    @endif
+
     var slider = document.getElementById('age-slider');
     noUiSlider.create(slider, {
      start: [0, 20],
@@ -195,9 +224,10 @@
 
     var slide = document.getElementById('distance-slider');
     noUiSlider.create(slide, {
-     start: [0, 10],
-     connect: true,
+     start: 10,
+     connect: [true,false],
      step: 1,
+     behaviour: 'snap',
      orientation: 'horizontal', // 'horizontal' or 'vertical'
      range: {
        'min': 0,
@@ -209,8 +239,7 @@
     });
 
     slide.noUiSlider.on('update', function(values){
-      document.getElementById("dmin").value = values[0];
-      document.getElementById("dmax").value = values[1];
+      document.getElementById("dmax").value = values[0];
     });
 </script>
 @stop
@@ -239,6 +268,7 @@ $('#pet').change(function(){
   }});
 });
 
+
       var map;
       var markers = [];
       var ids = [];
@@ -247,6 +277,8 @@ $('#pet').change(function(){
       function showLoca(posi){
         var lat = posi.coords.latitude;
         var long = posi.coords.longitude;
+        document.getElementById("lat").value = lat;
+        document.getElementById("lng").value = long;
         var myLatlng = new google.maps.LatLng(lat,long);
         map.setCenter(myLatlng)
 
@@ -260,14 +292,57 @@ $('#pet').change(function(){
         clickableIcons: false,
       });
 
+      $("#gps").on("click",function(){
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showLoca);
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+      });
+
+      // Create the search box and link it to the UI element.
+  var input = document.getElementById('pac-input');
+  var gps = document.getElementById('gps');
+  var searchBox = new google.maps.places.SearchBox(input);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(gps);
+
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener('bounds_changed', function() {
+    searchBox.setBounds(map.getBounds());
+  });
+
+  searchBox.addListener('places_changed', function() {
+    var places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    marker.setMap(null);
+    // For each place, get the icon, name and location.
+    var bounds = new google.maps.LatLngBounds();
+    places.forEach(function(place) {
+      if (!place.geometry) {
+        console.log("Returned place contains no geometry");
+        return;
+      }
+      // Create a marker for each place.
+      placeMarker(place.geometry.location);
+
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    map.fitBounds(bounds);
+  });
+
       getMapBound();
 
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showLoca);
-    } else {
-        console.log("Geolocation is not supported by this browser.");
-    }
     google.maps.event.addListener(map, 'idle', function() {
         getMapBound();
     });

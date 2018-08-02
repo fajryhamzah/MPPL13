@@ -144,29 +144,28 @@ class Seeker extends Controller
 
   }
 
-  public function finder(){
-    $data['category'] = PetCategory::where("parent_id",null)->get();
-    $location = User::select("lati","longi")->where("id",\Session::get('id'))->first();
-    $data['lati'] = $location->lati;
-    $data['longi'] = $location->longi;
-
-    return view("seeker.finder",$data);
-  }
-
+  /*
+    * Finder handler
+    * POST /advance_finder
+  */
   public function finderAction(Request $r){
     $rules = array(
         'type' => 'nullable',
         'category' => 'required',
-        'radius' => 'required|min:1|max:6',
-        'lat' => 'required',
-        'lng' => 'required',
+        'ageMin' => 'required|min:0',
+        'ageMax' => 'required|max:100',
+        'distMax' => 'required|max:100',
+        'gender' => 'required|min:0|max:1',
+        'lat' => 'nullable',
+        'lng' => 'nullable',
 
     );
+
 
     $validator = \Validator::make($r->all(), $rules);
 
     if($validator->fails()){
-        return \Redirect::back()->with(["error" => implode("\n",$validator->errors()->all())]);
+        return \Redirect::back()->with(["error" => implode("<br/>",$validator->errors()->all())]);
     }
 
     $radius = $r->input("radius");
@@ -174,8 +173,26 @@ class Seeker extends Controller
     $category = $r->input("category");
     $lat = $r->input("lat");
     $lng = $r->input("lng");
+    $minAge = $r->input("ageMin");
+    $maxAge = $r->input("ageMax");
+    $radius = $r->input("distMax");
+    $gender = $r->input("gender");
+    $basedOnLocation = true;
+
 
     $cate = ($type)? $type:$category;
+
+    if(!$lat){
+      $user = User::find(\Session::get("id"));
+
+      if($user->lati){
+        $lat = $user->lati;
+        $lng = $user->longi;
+      }
+      else{ //not based on location
+        $basedOnLocation = false;
+      }
+    }
 
 
     //get list of all category child
@@ -183,15 +200,23 @@ class Seeker extends Controller
       $cate = PetCategory::select("id")->where("parent_id",$category)->pluck("id")->toArray();
     }
 
-    //haversine formula
-    $distance_select = sprintf(
-					                "ROUND(( 6371 * acos( cos( radians(%s) )" ." * cos( radians( lati ) )" .
-					                        "* cos( radians( longi ) - radians(%s) )" .
-					                        "+ sin( radians(%s) ) * sin( radians( lati ) )" .
-					                    ")" .
-					                "), 2 ) " ."AS distance",$lat,$lng,$lat);
+    if($basedOnLocation){
+      //haversine formula
+      $distance_select = sprintf(
+        "ROUND(( 6371 * acos( cos( radians(%s) )" ." * cos( radians( lati ) )" .
+        "* cos( radians( longi ) - radians(%s) )" .
+        "+ sin( radians(%s) ) * sin( radians( lati ) )" .
+        ")" .
+        "), 2 ) " ."AS distance",$lat,$lng,$lat);
 
-  	$data = AdoptThread::select( \DB::raw("*" .",".  $distance_select) );
+      $data = AdoptThread::select( \DB::raw("*" .",".  $distance_select) );
+    }
+    else{
+      $data = AdoptThread::select("*");
+    }
+
+    $data = $data->join("gallery","gallery.open_adoption_id","open_adoption.id");
+    $data = $data->join("category_pet","category_pet.id","open_adoption.category_pet");
 
     if(is_array($cate)){
       $data = $data->whereIn("category_pet",$cate);
@@ -201,14 +226,19 @@ class Seeker extends Controller
     }
 
     //\DB::enableQueryLog();
-    $passing["data"] = $data->where("poster_id", '!=', \Session::get("id"))
+    $data = $data->where("poster_id", '!=', \Session::get("id"))
                   ->where("status",1)
-      					  ->having( 'distance', '<=', $radius )
-      					  ->orderBy( 'distance', 'ASC' )
-                  ->orderBy("post_date", 'ASC')
-      					  ->get();
+                  ->where("is_featured",1)
+                  ->where("gender",$gender)
+                  ->whereBetween("age",[$minAge,$maxAge]);
+    if($basedOnLocation){
+      $data = $data->having( 'distance', '<=', $radius )->orderBy( 'distance', 'ASC' );
+    }
+
+    $passing['data'] = $data->orderBy("post_date", 'ASC')->get();
+    $passing['category'] = PetCategory::where("parent_id",null)->get();
     //dd(\DB::getQueryLog());
-    dd($passing);
+    //dd($passing);
     return view("seeker.search_result",$passing);
 
   }

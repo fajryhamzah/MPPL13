@@ -83,7 +83,6 @@ Route::group(['middleware' => 'hasLogin'], function () {
 
   //finder
   Route::get("finder","Seeker@index");
-  Route::get("advance_finder","Seeker@finder");
   Route::post("advance_finder","Seeker@finderAction");
 
 
