@@ -92,7 +92,7 @@ class Dashboard extends Controller
     $user = User::where("forgotHash",\DB::raw("UNHEX('".$hash."')"))->first();
 
     if(!$user){
-      return 404;
+      return view("404");
     }
 
     $user->password = md5($pass);

@@ -17,7 +17,7 @@ class Email extends Controller
   }
 
   public function new_bidder($email,$username,$id,$name){
-    $data = array('name'=>$username,'id'=>$id);
+    $data = array('name'=>$username,'id'=>$id,'pet'=>$name);
     Mail::send(['html'=>'mailTemplate.new_bidder'], $data, function($message) use($email,$username,$name) {
          $message->to($email, $username)->subject
             ('You got new bidder on '.$name);
@@ -35,7 +35,7 @@ class Email extends Controller
   }
 
   public function choosen($email,$username,$id,$name){
-    $data = array("name" => $name,"id" => $id);
+    $data = array("uname"=>$username,"name" => $name,"id" => $id);
     Mail::send(['html'=>'mailTemplate.choosen'], $data, function($message) use($email,$username) {
          $message->to($email, $username)->subject
             ("Congratulation!");

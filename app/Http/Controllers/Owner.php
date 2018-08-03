@@ -369,7 +369,7 @@ class Owner extends Controller
     $data = AdoptThread::find($id);
 
     if(!$data){
-      return 404;
+      return view("404");
     }
 
     if($data->poster_id != \Session::get("id")){

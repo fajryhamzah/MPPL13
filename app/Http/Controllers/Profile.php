@@ -142,7 +142,7 @@ class Profile extends Controller
     $find = User::select("id","username","name","registOn","bio","img")->where("id",$id)->orWhere("username",$id)->where("active",1)->first();
 
     if(!$find){ //dead link
-      return 404;
+      return view("404");
     }
 
     $id = $find->id;

@@ -12,5 +12,5 @@ class User extends Model
   protected $table = 'user';
 	public $timestamps = false;
 	protected $primaryKey = 'id';
-	protected $fillable = ['username','password','email','verifyHash','active','registOn','name','bio','img','lati','longi','notif_new_bidder','notif_choosen','notif_new_post'];
+	protected $fillable = ['username','password','email','verifyHash','active','registOn','name','bio','img','lati','longi','notif_new_bidder','notif_choosen','notif_new_post','forgotHash','lang'];
 }

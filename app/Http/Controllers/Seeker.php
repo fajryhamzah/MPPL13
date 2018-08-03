@@ -45,7 +45,7 @@ class Seeker extends Controller
     ->first();
 
     if(!$post){
-      return 404;
+      return view("404");
     }
 
     //get adopter
