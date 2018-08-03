@@ -5,12 +5,12 @@
            <div class="nav-wrapper">
              <img src="{{ asset("images/logo1.png")}}" id="logo" />
              <ul id="nav-mobile" class="right hide-on-med-and-down">
-               <li><a href="{{ url("/#banner")}}">Home</a></li>
-               <li><a href="{{ url("/#why")}}">About</a></li>
-               <li><a href="{{ url("/#features")}}">Features</a></li>
-               <li><a href="{{ url("/#vision")}}">Vision</a></li>
-               <li><a class="btn nav-button" href="{{ url("login") }}">Log in</a></li>
-               <li><a class="btn nav-button" href="{{ url("register") }}">Sign up</a></li>
+               <li><a href="{{ url("/#banner")}}">@lang("menu.home")</a></li>
+               <li><a href="{{ url("/#why")}}">@lang("menu.about")</a></li>
+               <li><a href="{{ url("/#features")}}">@lang("menu.features")</a></li>
+               <li><a href="{{ url("/#vision")}}">@lang("menu.vision")</a></li>
+               <li><a class="btn nav-button" href="{{ url("login") }}">@lang("menu.login")</a></li>
+               <li><a class="btn nav-button" href="{{ url("register") }}">@lang("menu.register")</a></li>
              </ul>
            </div>
          </nav>

@@ -18,6 +18,9 @@ Route::get("/",function(){
 //see avalaible
 Route::get("post/{id}","Seeker@detail");
 
+//language switcher
+Route::get("lang/{id}/back/{back}","Dashboard@langSwitch");
+
 //WHEN USER DONT HAVE CREDENTIAL
 Route::group(['middleware' => 'notHaveLogin'], function () {
   //REGISTRATION ROUTES

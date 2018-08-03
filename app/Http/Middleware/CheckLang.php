@@ -15,6 +15,16 @@ class CheckLang
      */
     public function handle($request, Closure $next)
     {
+
+        if($request->session()->exists('lang')){
+          $lang = $request->session()->get("lang");
+
+        }
+        else{
+          $lang = "en";
+        }
+
+        \App::setLocale($lang);
         return $next($request);
     }
 }

@@ -15,6 +15,27 @@ use App\Http\Controllers\HomePage;
 
 class Dashboard extends Controller
 {
+  private $avalaibleLang = array("en","id");
+
+  /*
+    * Handling language change
+    *
+  */
+  public function langSwitch($id,$back){
+    if(\Session::has("lang")){
+      if(in_array($id,$this->avalaibleLang)){
+        \Session::put("lang",$id);
+      }
+      else{
+        \Session::put("lang","en");
+      }
+    }
+    else{
+      \Session::put("lang","en");
+    }
+
+    return \Redirect::to(url(base64_decode($back)));
+  }
 
   /*
     * Forgot password handler
@@ -193,6 +214,7 @@ class Dashboard extends Controller
     \Session::put('username', $data->username);
     \Session::put('img_profile', $data->img);
     \Session::put('channel', sha1($data->id.env("APP_KEY")));
+    \Session::put('lang',$data->lang);
 
     return json_encode(array('code'=>200,'msg'=> "Ok" ));
   }
