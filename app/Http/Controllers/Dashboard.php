@@ -227,7 +227,8 @@ class Dashboard extends Controller
   }
 
   public function index(){
-    return view("dashboard");
+    $data['category'] = PetCategory::where("parent_id",null)->get();
+    return view("dashboard",$data);
   }
 
   //get all type/race of pet
