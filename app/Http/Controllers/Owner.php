@@ -128,7 +128,8 @@ class Owner extends Controller
       }
       catch(\Exception $e){
         $msg = $e->getMessage();
-        return \Redirect::back()->with(["error" => $msg]);
+
+        return \Redirect::back()->with(["fatal" => $msg]);
       }
   }
 
@@ -277,7 +278,7 @@ class Owner extends Controller
       }
       catch(\Exception $e){
         $msg = $e->getMessage();
-        return \Redirect::back()->with(["error" => $msg]);
+        return \Redirect::back()->with(["fatal" => $msg]);
       }
   }
 
@@ -349,7 +350,7 @@ class Owner extends Controller
       return \Redirect::back()->with(["success" => "deleted"]);
     }
     catch(\Exception $e){
-      return \Redirect::back()->with(["error" => $e->getMessage()]);
+      return \Redirect::back()->with(["fatal" => $e->getMessage()]);
     }
   }
 
@@ -406,7 +407,7 @@ class Owner extends Controller
       return \Redirect::back()->with(["success" => 200]);
     }
     catch(\Exception $e){
-      return \Redirect::back()->with(["error" => $e->getMessage()]);
+      return \Redirect::back()->with(["fatal" => $e->getMessage()]);
     }
 
   }

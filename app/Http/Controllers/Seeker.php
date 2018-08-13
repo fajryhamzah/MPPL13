@@ -139,7 +139,7 @@ class Seeker extends Controller
       return \Redirect::back()->with(["success" => "success"]);
     }
     catch(\Exception $e){
-      return \Redirect::back()->with(["error" => $e->getMessage()]);
+      return \Redirect::back()->with(["fatal" => $e->getMessage()]);
     }
 
   }

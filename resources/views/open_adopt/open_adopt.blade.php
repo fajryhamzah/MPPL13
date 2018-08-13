@@ -98,6 +98,7 @@
         <form name="new_adopt" method="post" id="open_post" enctype="multipart/form-data">
           <div class="row">
             <div class="input-field col s5">
+
               @if(\Session::get("error"))
                 @if(\Session::get("error")->has("category"))
                   <span style="color:#d32f2f;display:block">@lang("open_post/open.error_cate")</span>
@@ -315,6 +316,7 @@ $("#sub").on("click",function(e){
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env("MAP_API_KEY","nothing") }}&libraries=places"></script>
 </script>
 <script>
+
       var map;
       var lat;
       var long;

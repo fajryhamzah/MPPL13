@@ -103,7 +103,7 @@ class Dashboard extends Controller
       return \Redirect::to(url("login"))->with(["success" => trans("forgot.changed")]);
     }
     catch(\Exception $e){
-      return \Redirect::back()->with(["error" => "2@300xkqxmcc7%%$sncbshqy$$@$.#\\.casdfxcxP;"]);
+      return \Redirect::back()->with(["fatal" => "2@300xkqxmcc7%%$sncbshqy$$@$.#\\.casdfxcxP;"]);
     }
 
 
@@ -162,7 +162,7 @@ class Dashboard extends Controller
       catch(\Exception $e){
         //$msg = $e->getMessage();
         $msg = trans("register.exist");
-        return \Redirect::to(url("/register"))->with(["error" => $msg]);
+        return \Redirect::to(url("/register"))->with(["fatal" => $msg]);
       }
   }
 
