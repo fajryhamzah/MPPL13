@@ -12,7 +12,6 @@ class CreateOpenAdoptionTable extends Migration {
 	 */
 	public function up()
 	{
-		if (Schema::hasTable('open_adoption')) { return; }
 		Schema::create('open_adoption', function(Blueprint $table)
 		{
 			$table->integer('id', true);

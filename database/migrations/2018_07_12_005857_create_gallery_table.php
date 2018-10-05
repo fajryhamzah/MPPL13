@@ -12,7 +12,6 @@ class CreateGalleryTable extends Migration {
 	 */
 	public function up()
 	{
-		if (Schema::hasTable('gallery')) { return; }
 		Schema::create('gallery', function(Blueprint $table)
 		{
 			$table->integer('id', true);

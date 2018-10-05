@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateCategoryPetTable extends Migration {
+class CreateGalleryTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,12 @@ class CreateCategoryPetTable extends Migration {
 	 */
 	public function up()
 	{
-		if (Schema::hasTable('category_pet')) { return; }
-		Schema::create('category_pet', function(Blueprint $table)
+		Schema::create('gallery', function(Blueprint $table)
 		{
 			$table->integer('id', true);
-			$table->string('name', 35);
-			$table->integer('parent_id')->nullable()->index('parent_id');
+			$table->integer('open_adoption_id')->index('open_adoption_id');
+			$table->text('link_name', 65535);
+			$table->integer('is_featured')->default(0);
 		});
 	}
 
@@ -29,7 +29,7 @@ class CreateCategoryPetTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('category_pet');
+		Schema::drop('gallery');
 	}
 
 }

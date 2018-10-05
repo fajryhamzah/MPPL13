@@ -12,14 +12,13 @@ class CreateAdoptingTable extends Migration {
 	 */
 	public function up()
 	{
-		if (Schema::hasTable('adopting')) { return; }
-
 		Schema::create('adopting', function(Blueprint $table)
 		{
 			$table->integer('id', true);
 			$table->integer('post_id');
 			$table->integer('bidder_id')->index('bidder_id');
 			$table->text('message', 65535);
+			$table->dateTime('apply_at')->nullable();
 			$table->boolean('status')->default(0);
 			$table->index(['post_id','bidder_id'], 'post_id');
 		});

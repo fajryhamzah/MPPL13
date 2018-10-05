@@ -12,7 +12,6 @@ class CreateUserTable extends Migration {
 	 */
 	public function up()
 	{
-		if (Schema::hasTable('user')) { return; }
 		Schema::create('user', function(Blueprint $table)
 		{
 			$table->integer('id', true);
@@ -27,6 +26,9 @@ class CreateUserTable extends Migration {
 			$table->text('img', 65535)->nullable();
 			$table->decimal('lati', 10, 8)->nullable();
 			$table->decimal('longi', 11, 8)->nullable();
+			$table->boolean('notif_new_bidder')->default(0);
+			$table->boolean('notif_choosen')->default(0);
+			$table->boolean('notif_new_post')->default(0);
 			$table->date('deleted_at')->nullable();
 		});
 	}
